@@ -13,19 +13,17 @@ using namespace boost::asio;
 
 namespace cuttlefish {
 
-connection::connection(server& server)
+connection::connection(io_service& ios)
     : enable_shared_from_this(),
       id_{0},
-      server_{server},
-      socket_{server.get_io_service()} {
+      socket_{ios} {
   std::cout << "info: socket(" << id_ << ") created" << std::endl;
 };
 
-connection::connection(server& server, int id)
+connection::connection(io_service& ios, int id)
     : enable_shared_from_this(),
       id_{id},
-      server_{server},
-      socket_{server.get_io_service()} {
+      socket_{ios} {
   std::cout << "info: socket(" << id_ << ") created" << std::endl;
 }
 
@@ -36,63 +34,11 @@ connection::~connection() {
 ip::tcp::socket& connection::get_socket() { return socket_; };
 
 bool connection::is_open() { return socket_.is_open(); };
+bool connection::is_done() { return out_done_ && out.size() == 0; };
 
 int connection::id() { return id_; }
 
-void connection::start() { receive(); };
-
-// TODO Research how to gracefully shutdown and close the connection.
-void connection::stop() {
-  if (socket_.is_open()) {
-    std::cout << "info: socket(" << id_ << ") shutdown" << std::endl;
-    try {
-      socket_.shutdown(socket::shutdown_both);
-    } catch (boost::system::system_error& e) {
-      std::cerr << "error: socket(" << id_
-                << ") shutdown exception: " << e.what() << std::endl;
-    }
-  }
-  std::cout << "info: socket(" << id_ << ") closing" << std::endl;
-  try {
-    socket_.close();
-  } catch (boost::system::system_error& e) {
-    std::cerr << "error: socket(" << id_ << ") close exception: " << e.what()
-              << std::endl;
-  }
-};
-
-void connection::receive() {
-  connection_ptr self{shared_from_this()};
-  // TODO Consider adding a deadline timer?
-  async_read_until(
-      socket_, in, "\r\n",
-      [this, self](const boost::system::error_code& e, std::size_t bytes) {
-        if (e) {
-          std::cerr << "error: socket(" << id_ << ") receiving bytes: ";
-          std::cerr << e << ", message " << e.message() << std::endl;
-          server_.stop(shared_from_this());
-          return;
-        }
-
-        if (bytes) {
-          // this->in.commit(bytes);
-          std::cout << "info: socket(" << id_ << ") request received ("
-                    << this->in.size() << ")" << std::endl;
-          //          std::cout << &this->in << std::endl;
-          //          std::cout << "info: end request received" << std::endl;
-        } else {
-          std::cerr << "warning: socket(" << id_ << ") no bytes received"
-                    << std::endl;
-        }
-
-        // Send a dummy response.
-        send();
-      });
-};
-
-void connection::send() {
-  // Clear output buffer.
-  out.consume(out.size());
+void connection::start() {
   // Fill in output buffer with dummy message.
   std::ostream out_{&out};
   out_ << "HTTP/1.1 200 OK\r\n";
@@ -115,25 +61,93 @@ void connection::send() {
   out_ << "<!-- End of html document. -->";
   out_ << std::endl;
 
+  receive();
+};
+
+void connection::receive() {
   connection_ptr self{shared_from_this()};
-  // TODO Deadline timer?
-  // Send message.
+  // TODO Adding a deadline timer, reading until EOF and log last activity.
+  async_read_until(
+      socket_, in, "\r\n",
+      [this, self](const boost::system::error_code& e, std::size_t bytes) {
+        if (e) {
+          std::cerr << "error: socket(" << id_ << ") receiving bytes: ";
+          std::cerr << e << ", message " << e.message() << std::endl;
+          close();
+          return;
+        }
+
+        if (bytes) {
+          // this->in.commit(bytes);
+          std::cout << "info: socket(" << id_ << ") request received ("
+                    << this->in.size() << ")" << std::endl;
+          //          std::cout << &this->in << std::endl;
+          //          std::cout << "info: end request received" << std::endl;
+        } else {
+          std::cerr << "warning: socket(" << id_ << ") no bytes received"
+                    << std::endl;
+          close();
+        }
+
+        // Send a dummy response.
+        send();
+      });
+};
+
+void connection::send() {
+  connection_ptr self{shared_from_this()};
+  // TODO Add deadline timer and log last activity.
   async_write(socket_, out, [this, self](const boost::system::error_code& e,
                                          std::size_t bytes_transferred) {
     if (e) {
       std::cerr << "error: socket(" << id_ << ") sending message failed: ";
       std::cerr << e << ", message " << e.message() << std::endl;
+      close();
+      return;
     }
 
     if (!bytes_transferred) {
       std::cerr << "warning: socket(" << id_ << ") no bytes sent" << std::endl;
+      close();
     } else {
       std::cout << "info: socket(" << id_ << ") bytes sent "
                 << bytes_transferred << std::endl;
-      this->out.consume(bytes_transferred);
+      out.consume(bytes_transferred);
     }
-
-    server_.stop(shared_from_this());
+    // Not all data was sent, queue another write (which should never be the
+    // case according to Boost docs).
+    if (out.size()) {
+      send();
+    }
+    // All done, graceful stop.
+    else {
+      out_done_ = true;
+      stop();
+    }
   });
+};
+
+void connection::stop() {
+  if (socket_.is_open()) {
+    std::cout << "info: socket(" << id_ << ") shutdown" << std::endl;
+    try {
+      socket_.shutdown(socket::shutdown_both);
+    } catch (boost::system::system_error& e) {
+      std::cerr << "error: socket(" << id_
+                << ") shutdown exception: " << e.what() << std::endl;
+    }
+  }
+};
+
+void connection::close() {
+  if (socket_.is_open()) {
+    std::cout << "info: socket(" << id_ << ") closing" << std::endl;
+    try {
+      socket_.close();
+    } catch (boost::system::system_error& e) {
+      std::cerr << "error: socket(" << id_ << ") close exception: " << e.what()
+                << std::endl;
+    }
+  }
 };
 }

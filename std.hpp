@@ -27,6 +27,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <functional>
 #include <algorithm>
 #include <string>
 #include <array>

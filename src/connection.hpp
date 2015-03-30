@@ -15,17 +15,21 @@ namespace cuttlefish {
 
 class server;
 
+// TODO Add some sort of idle/inactivity indicator.
+// TODO Get rid of lambdas in definition, use bind instead.
 class connection : public std::enable_shared_from_this<connection> {
  public:
-  connection(server& server);
-  connection(server& server, int id);
+  connection(io_service& ios);
+  connection(io_service& ios, int id);
   ip::tcp::socket& get_socket();
 
   bool is_open();
+  bool is_done();
   int id();
 
   void start();
   void stop();
+  void close();
 
   ~connection();
 
@@ -35,12 +39,11 @@ class connection : public std::enable_shared_from_this<connection> {
 
   int id_ = 0;
 
-  server& server_;
-
   socket socket_;
 
   buffer in;
   buffer out;
+  bool out_done_ = false;
 
   void receive();
   void send();

@@ -9,11 +9,14 @@ using namespace boost::asio;
 
 namespace cuttlefish {
 
-server::server() : ios_{}, signals_{ios_}, acceptor_{ios_}, conn_pool_{} {};
+server::server()
+  : enable_shared_from_this(),
+    ios_{}, signals_{ios_}, acceptor_{ios_}, conn_pool_{}
+  {};
 
 server::~server() {
   std::cout << "info: clear connection pool" << std::endl;
-  stop_all();
+  kill_all();
 };
 
 std::size_t server::run() {
@@ -32,6 +35,7 @@ std::size_t server::run() {
   acceptor_.listen(MAX_PENDING);
 
   accept();
+  clean();
 
   std::cout << "Start I/O service loop." << std::endl;
   auto executed = this->ios_.run();
@@ -50,7 +54,7 @@ void server::accept() {
   }
 
   static int id = 0;
-  connection_ptr c = std::make_shared<connection>(*this, id);
+  connection_ptr c = std::make_shared<connection>(ios_, id);
   id++;
 
   acceptor_.async_accept(c->get_socket(),
@@ -67,7 +71,7 @@ void server::accept() {
     } else if (conn_pool_.size() < MAX_CONNECTIONS) {
       std::cout << "info: accepting connection(" << c->id() << ") from: ";
       std::cout << c->get_socket().remote_endpoint() << std::endl;
-      start(c);
+      add(c);
     }
     // throttle.
     else {
@@ -76,8 +80,26 @@ void server::accept() {
       c->stop();
     }
     // Accept another connection.
-    this->accept();
+    accept();
   });
+}
+
+void server::clean() {
+  // TODO Optimize.
+  conn_pool conn_pool = conn_pool_;
+  for (auto& c : conn_pool) {
+    if (c->is_done() || !c->is_open()) {
+      // If connection is ready to be closed.
+      kill(c);
+    }
+  }
+  // Queue handler if we're still operational.
+  if (conn_pool_.size() || acceptor_.is_open()) {
+    server_ptr self {shared_from_this()};
+    boost::asio::deadline_timer t(ios_, boost::posix_time::millisec(10));
+    auto handler = std::bind(&server::clean, self);
+    t.async_wait(handler);
+  }
 }
 
 void server::await_stop() {
@@ -96,26 +118,23 @@ void server::await_stop() {
     // operations. Once all operations have finished the io_service::run()
     // call will exit.
     acceptor_.close();
-    // TODO Connection manager class?
     for (auto& c : conn_pool_) {
-      if (c != nullptr) {
-        c->stop();
-      }
+      c->stop();
     }
   });
 }
 
-void server::start(connection_ptr c) {
+void server::add(connection_ptr c) {
   conn_pool_.insert(c);
   c->start();
 };
-void server::stop(connection_ptr c) {
+void server::kill(connection_ptr c) {
   conn_pool_.erase(c);
-  c->stop();
+  c->close();
 };
-void server::stop_all() {
+void server::kill_all() {
   for (auto c : conn_pool_) {
-    c->stop();
+    c->close();
   }
   conn_pool_.clear();
 };

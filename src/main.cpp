@@ -17,9 +17,9 @@ int main(int argc, char* argv[]) {
 
   {
     // Create a new HTTP server.
-    cuttlefish::server server{};
+    cuttlefish::server_ptr server = std::make_shared<cuttlefish::server>();
     // Start the HTTP server.
-    server.run();
+    server->run();
   }
 
   return EXIT_SUCCESS;
