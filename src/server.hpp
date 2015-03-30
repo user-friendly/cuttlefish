@@ -1,17 +1,16 @@
 /*
- * @file http_proxy_server.hpp
- * HTTP proxy server class declarations.
+ * @file server.hpp
+ * Main server class declaration.
  */
 
-#ifndef HTTP_PROXY_SERVER_HPP_
-#define HTTP_PROXY_SERVER_HPP_
+#pragma once
 
 #include "std.hpp"
 #include "connection.hpp"
 
 using namespace boost::asio;
 
-namespace proxy {
+namespace cuttlefish {
 
 class server : boost::noncopyable {
  public:
@@ -31,7 +30,7 @@ class server : boost::noncopyable {
   ~server();
 
   /**
-   * A proxy to boost::asio::io_service::run().
+   * Basically starts the IO service loop.
    */
   std::size_t run();
 
@@ -39,14 +38,8 @@ class server : boost::noncopyable {
 
   void stop(connection_ptr c);
 
-  //    int fork();
  private:
   using conn_pool = std::set<connection_ptr>;
-
-  //    ::FILE* out_log;
-  //    ::FILE* err_log;
-  //    const char* out_log_fname = "proxy.log";
-  //    const char* err_log_fname = "proxy.log";
 
   io_service ios_;
 
@@ -58,11 +51,8 @@ class server : boost::noncopyable {
 
   /**
    * New connections handler.
-   *
-   * @return
-   *   False if the connection pool is full or true on success.
    */
-  bool accept();
+  void accept();
 
   // start(), stop() and stop_all() will be private for the time being
   // since they're not used outside the server class.
@@ -72,5 +62,3 @@ class server : boost::noncopyable {
   void await_stop();
 };
 }
-
-#endif /* HTTP_PROXY_SERVER_HPP_ */

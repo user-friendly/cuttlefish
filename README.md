@@ -4,10 +4,11 @@ CUTTLEFISH
 ABOUT
 -----
 
-HTTP 1.1 Proxy server.
+A dumb HTTP 1.1 Web server.
 
 Purpose of this program is learning C++ & GNU Autotools.
 
+Full HTTP 1.1 protocol not supported yet.
 
 CUSTOM BOOST BUILD
 ------------------

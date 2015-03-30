@@ -1,5 +1,6 @@
 /**
- * Simple HTTP Proxy.
+ * @file main.cpp
+ * Program entry point.
  */
 
 #include "config.h"
@@ -15,23 +16,10 @@ int main(int argc, char* argv[]) {
   print_legal();
 
   {
-    proxy::server server{};
-
-    //    // Forks the process.
-    //    if (int ret = server.fork()) {
-    //      return ret;
-    //    }
-
-    // Log daemon start.
-    std::cout << '[' << getpid() << ']';
-    std::cout << " Proxy daemon started..." << std::endl;
-
-    // Run the HTTP server.
+    // Create a new HTTP server.
+    cuttlefish::server server{};
+    // Start the HTTP server.
     server.run();
-
-    // Log daemon shutdown.
-    std::cout << '[' << getpid() << ']';
-    std::cout << " Proxy daemon stopped." << std::endl;
   }
 
   return EXIT_SUCCESS;

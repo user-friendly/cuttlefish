@@ -15,18 +15,18 @@ AM_CXXFLAGS = -DBOOST_ASIO_HAS_MOVE $(PTHREAD_CFLAGS)
 
 pch_files = *.hpp.?ch *.hpp.?ch
 
-bin_PROGRAMS = proxy
-proxy_SOURCES = main.cpp connection.cpp server.cpp
-proxy_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
-proxy_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)
-proxy_LDADD = $(LDADD) \
+bin_PROGRAMS = httpd
+httpd_SOURCES = main.cpp connection.cpp server.cpp
+httpd_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
+httpd_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)
+httpd_LDADD = $(LDADD) \
                $(PTHREAD_LIBS) \
                $(BOOST_THREAD_LIB) \
                $(BOOST_SYSTEM_LIB) \
                $(BOOST_DATE_TIME_LIB)
 # PCH_FILENAME = std.hpp.(pch|gch)
 # AM error: configure substitutions are not allowed in _SOURCES variables
-nodist_proxy_SOURCES = $(pch_files)
+nodist_httpd_SOURCES = $(pch_files)
 
 BUILT_SOURCES = $(PCH_FILENAME)
 CLEANFILES = $(pch_files)

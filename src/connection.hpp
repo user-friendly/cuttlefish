@@ -5,14 +5,13 @@
  *      Author: plamen
  */
 
-#ifndef CONNECTION_HPP_
-#define CONNECTION_HPP_
+#pragma once
 
 #include "std.hpp"
 
 using namespace boost::asio;
 
-namespace proxy {
+namespace cuttlefish {
 
 class server;
 
@@ -49,5 +48,3 @@ class connection : public std::enable_shared_from_this<connection> {
 
 using connection_ptr = std::shared_ptr<connection>;
 }
-
-#endif /* CONNECTION_HPP_ */

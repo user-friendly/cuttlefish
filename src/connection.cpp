@@ -11,7 +11,7 @@
 
 using namespace boost::asio;
 
-namespace proxy {
+namespace cuttlefish {
 
 connection::connection(server& server)
     : enable_shared_from_this(),
@@ -41,6 +41,7 @@ int connection::id() { return id_; }
 
 void connection::start() { receive(); };
 
+// TODO Research how to gracefully shutdown and close the connection.
 void connection::stop() {
   if (socket_.is_open()) {
     std::cout << "info: socket(" << id_ << ") shutdown" << std::endl;
@@ -96,7 +97,7 @@ void connection::send() {
   std::ostream out_{&out};
   out_ << "HTTP/1.1 200 OK\r\n";
   out_ << "Date: Mon, 23 May 2005 22:38:34 GMT\r\n";
-  out_ << "Server: HTTP Proxy 0.1.alpha1 (Linux)\r\n";
+  out_ << "Server: Cuttlefish Web Server 0.1.alpha1 (Linux)\r\n";
   out_ << "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n";
   out_ << "Content-Type: text/html; charset=UTF-8\r\n";
   out_ << "Accept-Ranges: bytes\r\n";
