@@ -18,7 +18,7 @@ connection::connection(io_service& ios)
       id_{0},
       socket_{ios} {
   std::cout << "info: socket(" << id_ << ") created" << std::endl;
-};
+}
 
 connection::connection(io_service& ios, int id)
     : enable_shared_from_this(),
@@ -29,12 +29,12 @@ connection::connection(io_service& ios, int id)
 
 connection::~connection() {
   std::cout << "info: socket(" << id_ << ") destroyed" << std::endl;
-};
+}
 
-ip::tcp::socket& connection::get_socket() { return socket_; };
+ip::tcp::socket& connection::get_socket() { return socket_; }
 
-bool connection::is_open() { return socket_.is_open(); };
-bool connection::is_done() { return out_done_ && out.size() == 0; };
+bool connection::is_open() { return socket_.is_open(); }
+bool connection::is_done() { return out_done_ && out.size() == 0; }
 
 int connection::id() { return id_; }
 
@@ -62,7 +62,7 @@ void connection::start() {
   out_ << std::endl;
 
   receive();
-};
+}
 
 void connection::receive() {
   connection_ptr self{shared_from_this()};
@@ -92,7 +92,7 @@ void connection::receive() {
         // Send a dummy response.
         send();
       });
-};
+}
 
 void connection::send() {
   connection_ptr self{shared_from_this()};
@@ -125,7 +125,7 @@ void connection::send() {
       stop();
     }
   });
-};
+}
 
 void connection::stop() {
   if (socket_.is_open()) {
@@ -137,7 +137,7 @@ void connection::stop() {
                 << ") shutdown exception: " << e.what() << std::endl;
     }
   }
-};
+}
 
 void connection::close() {
   if (socket_.is_open()) {
@@ -149,5 +149,5 @@ void connection::close() {
                 << std::endl;
     }
   }
-};
+}
 }

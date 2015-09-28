@@ -12,12 +12,12 @@ namespace cuttlefish {
 server::server()
   : enable_shared_from_this(),
     ios_{}, signals_{ios_}, acceptor_{ios_}, conn_pool_{}
-  {};
+  {}
 
 server::~server() {
   std::cout << "info: clear connection pool" << std::endl;
   kill_all();
-};
+}
 
 std::size_t server::run() {
   // Handle program termination properly.
@@ -43,9 +43,9 @@ std::size_t server::run() {
   std::cout << "[" << getpid() << "] ";
   std::cout << "Web server stopped." << std::endl;
   return executed;
-};
+}
 
-io_service& server::get_io_service() { return ios_; };
+io_service& server::get_io_service() { return ios_; }
 
 void server::accept() {
   // Check acceptor.
@@ -127,15 +127,15 @@ void server::await_stop() {
 void server::add(connection_ptr c) {
   conn_pool_.insert(c);
   c->start();
-};
+}
 void server::kill(connection_ptr c) {
   conn_pool_.erase(c);
   c->close();
-};
+}
 void server::kill_all() {
   for (auto c : conn_pool_) {
     c->close();
   }
   conn_pool_.clear();
-};
+}
 }
