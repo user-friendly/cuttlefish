@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([Cuttlefish Web Server], [0.1.alpha1], [qnq6666@gmail.com])
+AC_INIT([Cuttlefish Web Framework], [0.1.alpha2], [qnq6666@gmail.com])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -10,14 +10,13 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4-project])
 
 # Init Automake.
-AM_INIT_AUTOMAKE([1.11 subdir-objects readme-alpha no-dist no-dist-gzip -Wall])
+AM_INIT_AUTOMAKE([1.15 subdir-objects readme-alpha no-dist no-dist-gzip -Wall])
 
 # Add debug option.
 AX_CHECK_ENABLE_DEBUG([no], [DEBUG])
 AX_CHECK_ENABLE_PEDANTIC([no])
 
 # Checks for programs.
-AC_PROG_CC([clang cc gcc])
 AC_PROG_CXX([clang++ c++ g++ gcc])
 AC_PROG_INSTALL
 
@@ -25,15 +24,14 @@ AC_PROG_INSTALL
 AX_PRECOMPILED_HEADERS([std.hpp])
 
 # Checks for languages.
-AC_LANG([C])
 AC_LANG([C++])
 
 # C++ checks.
-AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
+AX_CXX_COMPILE_STDCXX_14([noext], [mandatory])
 
 # Checks for libraries.
 AX_PTHREAD
-AX_BOOST_BASE([1.55],
+AX_BOOST_BASE([1.62],
 		[],
 		[AC_MSG_ERROR([Minimal Boost library requirments not met.])
 ])
