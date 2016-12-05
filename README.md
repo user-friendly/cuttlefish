@@ -4,11 +4,7 @@ CUTTLEFISH
 ABOUT
 -----
 
-A dumb HTTP 1.1 Web server.
-
-Purpose of this program is learning C++ & GNU Autotools.
-
-Full HTTP 1.1 protocol not supported yet.
+Learning C++ and software development in general.
 
 CUSTOM BOOST BUILD
 ------------------
