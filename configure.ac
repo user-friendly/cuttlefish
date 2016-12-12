@@ -30,15 +30,15 @@ AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_14([noext], [mandatory])
 
 # Checks for libraries.
-AX_PTHREAD
-AX_BOOST_BASE([1.62],
-		[],
-		[AC_MSG_ERROR([Minimal Boost library requirments not met.])
-])
-AX_BOOST_SYSTEM
-AX_BOOST_THREAD
-AX_BOOST_ASIO
-AX_BOOST_DATE_TIME
+dnl AX_PTHREAD
+dnl AX_BOOST_BASE([1.62],
+dnl 		[],
+dnl 		[AC_MSG_ERROR([Minimal Boost library requirments not met.])
+dnl ])
+dnl AX_BOOST_SYSTEM
+dnl AX_BOOST_THREAD
+dnl AX_BOOST_ASIO
+dnl AX_BOOST_DATE_TIME
 
 # Checks for header files.
 

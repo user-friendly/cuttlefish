@@ -42,9 +42,9 @@
 #include <unistd.h>
 
 // Boost headers.
-#include <boost/utility.hpp>
-#include <boost/bind.hpp>
-#include <boost/asio.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+// #include <boost/utility.hpp>
+// #include <boost/bind.hpp>
+// #include <boost/asio.hpp>
+// #include <boost/date_time/posix_time/posix_time.hpp>
 
 #endif /* STD_HPP_ */
