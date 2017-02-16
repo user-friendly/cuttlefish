@@ -40,7 +40,7 @@ dnl AX_BOOST_THREAD
 dnl AX_BOOST_ASIO
 dnl AX_BOOST_DATE_TIME
 dnl Check for SDL
-AM_PATH_SDL2(2.0.5,
+AM_PATH_SDL2(2.0.4,
     :,
     AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )

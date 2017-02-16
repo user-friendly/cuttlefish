@@ -8,9 +8,11 @@
 #include "resource.hpp"
 
 void print_legal();
+void print_sdl_version();
 
 int main(int argc, char* argv[]) {
   print_legal();
+  print_sdl_version();
 
   std::cout << "Running on platform: " << SDL_GetPlatform() << std::endl;
 
@@ -43,6 +45,7 @@ int main(int argc, char* argv[]) {
   
   uint32_t window_flags = SDL_WINDOW_OPENGL
     | SDL_WINDOW_BORDERLESS
+    | SDL_WINDOW_FULLSCREEN_DESKTOP
     ;
   SDL_Window *window = SDL_CreateWindow("An SDL window!",
                                         SDL_WINDOWPOS_CENTERED,
@@ -55,9 +58,6 @@ int main(int argc, char* argv[]) {
 	SDL_Quit();
 	return EXIT_FAILURE;
   }
-
-  SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-  SDL_SetWindowSize(window, dm.w, dm.h);
 
   uint32_t renderer_flags = SDL_RENDERER_ACCELERATED
     | SDL_RENDERER_PRESENTVSYNC
@@ -83,20 +83,15 @@ int main(int argc, char* argv[]) {
   SDL_FreeSurface(bitmapSurface);
 
   int tmpInputDelay = 0;
-  
+
   int delay = 1000/25;
-  bool run = true;
+  bool run = true, render = true;
   while (run == true) {
-    // @FIXME Calling this function leaves the screen blank.
     // Wait some amount of time.
     SDL_Delay(delay);
-
-    if (tmpInputDelay > 50) {
-      std::cout << "Game loop: poll events" << std::endl;
-    // Event loop, for the current cycle.
+    
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-      std::cout << "Game loop, event poll: got an event" << std::endl;
+    if (SDL_PollEvent(&event)) {
       if (event.type == SDL_MOUSEBUTTONUP) {
         std::cout << "Event loop: mouse button up" << std::endl;
         if (event.button.button == SDL_BUTTON_LEFT) {
@@ -105,20 +100,30 @@ int main(int argc, char* argv[]) {
           run = false;
         }
       }
-      else if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE) {
-        std::cout << "Event loop: key Escape released" << std::endl;
-        run = false;
-      }
-      else if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_m) {
-        SDL_MinimizeWindow(window);
+      else if (event.type == SDL_KEYUP) {
+        switch (event.key.keysym.sym) {
+        case SDLK_ESCAPE:
+        case SDLK_q:
+          std::cout << "Event loop: quit key pressed" << std::endl;
+          run = false;
+          break;
+        case SDLK_f:
+          SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+          break;
+        case SDLK_m:
+          SDL_MinimizeWindow(window);
+          break;
+        case SDLK_r:
+          render = !render;
+          std::cout << "Render turned " << (render ? "on" : "off") << std::endl;
+          break;
+        }
       }
       else if (event.type == SDL_QUIT) {
         std::cout << "Event loop: quit" << std::endl;
         run = false;
       }
     }
-    }
-    tmpInputDelay++;
 
     // Clear backbuffer.
     SDL_RenderClear(renderer);
@@ -136,6 +141,17 @@ int main(int argc, char* argv[]) {
 
   SDL_Quit();  
   return EXIT_SUCCESS;
+}
+
+void print_sdl_version() {
+  SDL_version compiled;
+  SDL_version linked;
+  SDL_VERSION(&compiled);
+  SDL_GetVersion(&linked);
+  printf("Compiled against SDL version %d.%d.%d.\n",
+         compiled.major, compiled.minor, compiled.patch);
+  printf("Linking against SDL version %d.%d.%d.\n",
+         linked.major, linked.minor, linked.patch);
 }
 
 void print_legal() {
