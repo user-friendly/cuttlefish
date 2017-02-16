@@ -1,0 +1,6 @@
+# Ignore everything in the libs directory.
+*
+
+# Except this fine and the readme file.
+!.gitignore
+!README
