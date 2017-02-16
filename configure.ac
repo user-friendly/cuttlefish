@@ -39,6 +39,14 @@ dnl AX_BOOST_SYSTEM
 dnl AX_BOOST_THREAD
 dnl AX_BOOST_ASIO
 dnl AX_BOOST_DATE_TIME
+dnl Check for SDL
+AM_PATH_SDL2(2.0.5,
+    :,
+    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+)
+CFLAGS="$CFLAGS $SDL_CFLAGS"
+CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
+LIBS="$LIBS $SDL_LIBS"
 
 # Checks for header files.
 
@@ -73,6 +81,10 @@ echo \
  CXXFLAGS_PCH: ${CXXFLAGS_PCH}
  PCH_FILENAME: ${PCH_FILENAME}
  PCH_SOURCE_FILENAME: ${PCH_SOURCE_FILENAME}
+
+ SDL2:
+ SDL_CFLAGS: ${SDL_CFLAGS}
+ SDL_LIBS: ${SDL_LIBS}
 
  Now type 'make @<:@<target>@:>@'
    where the optional <target> is:

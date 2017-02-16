@@ -13,13 +13,16 @@
 # AM_CFLAGS = $(PTHREAD_CFLAGS)
 # AM_CXXFLAGS = -DBOOST_ASIO_HAS_MOVE $(PTHREAD_CFLAGS)
 
+AM_CFLAGS = -I$(top_srcdir)/include
+AM_CXXFLAGS = -I$(top_srcdir)/include
+
 pch_files = *.hpp.?ch *.hpp.?ch
 
 bin_PROGRAMS = fishy
 fishy_SOURCES = main.cpp
 #fishy_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
 fishy_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)
-fishy_LDADD = $(LDADD) # \
+fishy_LDADD = $(LDADD) #\
                # $(PTHREAD_LIBS) \
                # $(BOOST_THREAD_LIB) \
                # $(BOOST_SYSTEM_LIB) \
