@@ -31,8 +31,11 @@ fishy_LDADD = $(LDADD) #\
 # AM error: configure substitutions are not allowed in _SOURCES variables
 nodist_fishy_SOURCES = $(pch_files)
 
-BUILT_SOURCES = $(PCH_FILENAME)
+BUILT_SOURCES = $(PCH_FILENAME) data
 CLEANFILES = $(pch_files)
+
+data:
+	ln -s $(abs_top_srcdir)/data data
 
 # Precompiled header file.
 $(PCH_FILENAME): $(PCH_SOURCE)
