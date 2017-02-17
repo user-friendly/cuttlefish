@@ -109,6 +109,7 @@ build-aux
 # added.
 # 
 # Yes, but it does not.
+*.VC.db
 ipch
 x64
 
