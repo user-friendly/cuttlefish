@@ -3,14 +3,20 @@
  * Program entry point.
  */
 
+#ifdef OS_LINUX
 #include "config.h"
+#endif
 #include "std.hpp"
 #include "resource.hpp"
 
 void print_legal();
 void print_sdl_version();
 
+#ifdef OS_WINDOWS
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
+#else
 int main(int argc, char* argv[]) {
+#endif
   print_legal();
   print_sdl_version();
 

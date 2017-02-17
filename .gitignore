@@ -108,6 +108,9 @@ build-aux
 # interfere with some future files to be
 # added.
 # 
+# Yes, but it does not.
+ipch
+x64
 
 # Eclipse
 *.pydevproject

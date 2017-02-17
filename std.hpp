@@ -38,8 +38,13 @@
 #include <stdexcept>
 #include <typeinfo>
 
-// POSIX headers?
+// OS specific headers.
+#ifdef OS_WINDOWS
+// Windows specific headers.
+#include <windows.h>
+#elif OS_LINUX
 #include <unistd.h>
+#endif
 
 // Boost headers.
 // #include <boost/utility.hpp>
