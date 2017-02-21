@@ -110,6 +110,7 @@ build-aux
 # 
 # Yes, but it does not.
 *.VC.db
+*.VC.opendb
 ipch
 x64
 

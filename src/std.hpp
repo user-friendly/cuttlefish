@@ -15,6 +15,6 @@
 //       See Clang's manual for PCH.
 
 #ifndef STD_HPP_
-#pragma message "Not using the precompiled version of this file!"
+#pragma message ("Not using the precompiled version of this file!")
 #include "../std.hpp"
 #endif
