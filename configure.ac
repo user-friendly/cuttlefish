@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([Cuttlefish Web Framework], [0.1.alpha2], [qnq6666@gmail.com])
+AC_INIT([Cuttlefish], [0.1.experimental], [pivanov@foobar.ninja])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([config.h])
@@ -31,14 +31,17 @@ AX_CXX_COMPILE_STDCXX_14([noext], [mandatory])
 
 # Checks for libraries.
 dnl AX_PTHREAD
-dnl AX_BOOST_BASE([1.62],
-dnl 		[],
-dnl 		[AC_MSG_ERROR([Minimal Boost library requirments not met.])
-dnl ])
-dnl AX_BOOST_SYSTEM
-dnl AX_BOOST_THREAD
-dnl AX_BOOST_ASIO
-dnl AX_BOOST_DATE_TIME
+AX_BOOST_BASE([1.63],
+        [],
+        [AC_MSG_ERROR([Minimal Boost library requirments not met.])
+])
+AX_BOOST_SYSTEM
+AX_BOOST_FILESYSTEM
+AX_BOOST_DATE_TIME
+AX_BOOST_CHRONO
+AX_BOOST_LOG
+AX_BOOST_THREAD
+
 dnl Check for SDL
 AM_PATH_SDL2(2.0.4,
     :,
@@ -82,9 +85,19 @@ echo \
  PCH_FILENAME: ${PCH_FILENAME}
  PCH_SOURCE_FILENAME: ${PCH_SOURCE_FILENAME}
 
- SDL2:
+ -- Boost
+ BOOST_CPPFLAGS: ${BOOST_CPPFLAGS}
+ BOOST_LDFLAGS: ${BOOST_LDFLAGS}
+
+ -- SDL2
  SDL_CFLAGS: ${SDL_CFLAGS}
  SDL_LIBS: ${SDL_LIBS}
+
+ -- Linker
+ LDFLAGS: ${LDFLAGS}
+ LIBOBJS: ${LIBOBJS}
+ LIBS: ${LIBS}
+ LTLIBOBJS: ${LTLIBOBJS}
 
  Now type 'make @<:@<target>@:>@'
    where the optional <target> is:

@@ -3,7 +3,7 @@
 #include "resource.hpp"
 
 namespace Cuttlefish {
-	void Game::start()
+	int Game::start()
 	{
 		std::cout << "Running on platform: " << SDL_GetPlatform() << std::endl;
 
@@ -125,15 +125,20 @@ namespace Cuttlefish {
 			// Present the backbuffer, removing the previous one from screen.
 			SDL_RenderPresent(renderer);
 		}
+
+        // @FIXME Move to destructor.
+        SDL_DestroyTexture(bitmapTex);
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
+		SDL_Quit();
+
+        return EXIT_SUCCESS;
 	}
 
 	void Game::stop()
 	{
-		SDL_DestroyTexture(bitmapTex);
-		SDL_DestroyRenderer(renderer);
-		SDL_DestroyWindow(window);
-		SDL_Quit();
-	}
+      //@TODO Implement or is this function needed?
+    }
 
 	void Game::printInfo() {
 		SDL_version compiled;

@@ -11,7 +11,9 @@
 namespace Cuttlefish {
 	class Game {
 	public:
-		void start();
+        // @FIXME Do not use old school error handling.
+        // Return void and possible use exceptions.
+		int start();
 		void stop();
 		void printLegal();
 		void printInfo();

@@ -11,22 +11,28 @@
 # If we've gotten so far in the build process, C++ 0x std should
 # be guaranteed and therefore it's safe to enable ASIO move.
 # AM_CFLAGS = $(PTHREAD_CFLAGS)
-# AM_CXXFLAGS = -DBOOST_ASIO_HAS_MOVE $(PTHREAD_CFLAGS)
+# AM_CXXFLAGS = -DBOOST_ASIO_HAS_MOVE
 
 AM_CFLAGS = -I$(top_srcdir)/include
-AM_CXXFLAGS = -I$(top_srcdir)/include
+AM_CXXFLAGS = $(BOOST_CPPFLAGS) -I$(top_srcdir)/include
+AM_LDFLAGS = $(BOOST_LDFLAGS)
 
 pch_files = *.hpp.?ch *.hpp.?ch
 
 bin_PROGRAMS = fishy
-fishy_SOURCES = main.cpp
+fishy_SOURCES = main.cpp \
+		Game.cpp \
+		OSGraphics.cpp
 #fishy_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
 fishy_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)
-fishy_LDADD = $(LDADD) #\
-               # $(PTHREAD_LIBS) \
-               # $(BOOST_THREAD_LIB) \
-               # $(BOOST_SYSTEM_LIB) \
-               # $(BOOST_DATE_TIME_LIB)
+fishy_LDADD = $(LDADD) \
+               $(BOOST_SYSTEM_LIB) \
+               $(BOOST_FILE_SYSTEM_LIB) \
+               $(BOOST_DATE_TIME_LIB) \
+			   $(BOOST_CHRONO_LIB) \
+			   $(BOOST_LOG_LIB) \
+			   $(BOOST_THREAD_LIB)
+
 # PCH_FILENAME = std.hpp.(pch|gch)
 # AM error: configure substitutions are not allowed in _SOURCES variables
 nodist_fishy_SOURCES = $(pch_files)
