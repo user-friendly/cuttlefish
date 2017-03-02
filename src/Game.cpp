@@ -63,6 +63,7 @@ namespace Cuttlefish {
         case SDLK_e:
           Exception e {"SDL_GetDesktopDisplayMode Error: "};
           e << "Nope, it's a fake exception.";
+          throw e;
           break;
         // case SDLK_r:
         //   render = !render;

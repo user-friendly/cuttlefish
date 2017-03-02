@@ -7,6 +7,7 @@
 #endif
 #include "std.hpp"
 #include "Game.hpp"
+#include "Exception.hpp"
 
 /**
  * Print legal information.
@@ -19,14 +20,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 int main(int argc, char* argv[]) {
 #endif
   printLegal();
-  
-  Cuttlefish::Game game;
 
   try {
+    
+    Cuttlefish::Game game;
+
     game.start();
+    
   }
-  catch (...) {
-    std::cerr << "Uncaught exceptoin!" << std::endl;
+  catch (Cuttlefish::Exception e) {
+    std::cerr << "Uncaught exceptoin: " << e.message() << std::endl;
     return EXIT_FAILURE;
   }
 
