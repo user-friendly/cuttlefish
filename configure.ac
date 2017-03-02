@@ -29,6 +29,14 @@ AC_LANG([C++])
 # C++ checks.
 AX_CXX_COMPILE_STDCXX_14([noext], [mandatory])
 
+# Checks for header files.
+AC_CHECK_HEADERS([gsl/gsl gsl/gsl_algorithm gsl/gsl_assert gsl/gsl_byte gsl/gsl_util gsl/multi_span gsl/span gsl/string_span],
+        [],
+        [AC_MSG_ERROR([GSL support headers missing.])
+])
+
+# Checks for typedefs, structures, and compiler characteristics.
+
 # Checks for libraries.
 dnl AX_PTHREAD
 AX_BOOST_BASE([1.63],
@@ -50,10 +58,6 @@ AM_PATH_SDL2(2.0.4,
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
-
-# Checks for header files.
-
-# Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
 

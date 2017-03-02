@@ -21,6 +21,8 @@ pch_files = *.hpp.?ch *.hpp.?ch
 
 bin_PROGRAMS = fishy
 fishy_SOURCES = main.cpp \
+		Exception.cpp \
+		Resource.cpp \
 		Game.cpp \
 		OSGraphics.cpp
 #fishy_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)

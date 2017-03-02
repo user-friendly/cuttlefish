@@ -20,7 +20,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cinttypes>
+#include <cstdint>
+//#include <cinttypes>
 #include <iterator>
 #include <memory>
 #include <iostream>
@@ -46,11 +47,11 @@
 #include <unistd.h>
 #endif
 
+// Guideline Support Library
+#include <gsl/gsl>
+
 // Boost headers.
-// #include <boost/utility.hpp>
-// #include <boost/bind.hpp>
-// #include <boost/asio.hpp>
-// #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/format.hpp>
 
 // SDL2 headers.
 #include <SDL.h>

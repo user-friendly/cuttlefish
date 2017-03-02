@@ -1,18 +1,49 @@
 /**
  * @file
- * OSGraphics class file.
+ * OSGraphics declaration file.
  */
 
 #ifndef OSGRAPHICS_HPP
 #define OSGRAPHICS_HPP
 
+#include "std.hpp"
+
 namespace Cuttlefish
 {
 	class OSGraphics
 	{
-		void init();
-
-		// @TODO Setup fullscreen borderless window, native resolution and refresh rate.
+    protected:
+      gsl::owner<SDL_Window> *window;
+      gsl::owner<SDL_Renderer> *renderer;
+      gsl::owner<SDL_Texture> *bitmapTex;
+      void freeResources();
+    public:
+      OSGraphics();
+      ~OSGraphics();
+      
+      /**
+       * Draws and example texture.
+       *
+       * Note that this function uses SDL renderer.
+       */
+      void drawExample();
+      
+      /**
+       * Render the backbuffer and then clear it.
+       *
+       * Note that this function uses SDL renderer.
+       */
+      void render();
+      
+      /**
+       * Minimize window.
+       */
+      void windowMinimize();
+      
+      /**
+       * Make window fullscreen.
+       */
+      void windowFullscreen();
 	};
 }
 
