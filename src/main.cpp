@@ -2,9 +2,6 @@
  * @file main.cpp
  * Program entry point.
  */
-#ifdef OS_LINUX
-#include "config.h"
-#endif
 #include "std.hpp"
 #include "Game.hpp"
 #include "Exception.hpp"

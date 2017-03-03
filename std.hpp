@@ -16,6 +16,10 @@
 #ifndef STD_HPP_
 #define STD_HPP_
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 // C++ STD headers.
 #include <cstdio>
 #include <cstdlib>
@@ -38,6 +42,18 @@
 #include <locale>
 #include <stdexcept>
 #include <typeinfo>
+
+// OpenGL headers.
+#if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+  #include <windows.h>
+#endif
+#ifdef HAVE_GL_GL_H
+  #include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+  #include <OpenGL/gl.h>
+#else
+  #error no gl.h
+#endif
 
 // OS specific headers.
 #ifdef OS_WINDOWS

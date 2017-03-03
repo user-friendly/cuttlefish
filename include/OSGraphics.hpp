@@ -14,7 +14,7 @@ namespace Cuttlefish
 	{
     protected:
       gsl::owner<SDL_Window> *window;
-      gsl::owner<SDL_Renderer> *renderer;
+      gsl::owner<SDL_GLContext> glcontext;
       gsl::owner<SDL_Texture> *bitmapTex;
       void freeResources();
     public:

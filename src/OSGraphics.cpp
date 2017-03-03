@@ -74,46 +74,30 @@ namespace Cuttlefish
       throw e;
     }
 
-    uint32_t renderer_flags = SDL_RENDERER_ACCELERATED
-      | SDL_RENDERER_PRESENTVSYNC
-      | SDL_RENDERER_TARGETTEXTURE
-      ;
-    this->renderer = SDL_CreateRenderer(this->window, -1, renderer_flags);
-    if (this->renderer == nullptr) {
-      Exception e {"SDL_CreateRenderer Error: "};
+    this->glcontext = SDL_GL_CreateContext(this->window);
+    if (this->glcontext == nullptr) {
+      Exception e {"SDL_GL_CreateContext Error: "};
       e << SDL_GetError();
       SDL_DestroyWindow(this->window);
       SDL_Quit();
       throw e;
     }
-
-    std::string imagePath = getResourcePath() + "screen-test.bmp";
-
-    gsl::owner<SDL_Surface> *bitmapSurface = SDL_LoadBMP(imagePath.c_str());
-    if (bitmapSurface == nullptr) {
-      Exception e {"SDL_LoadBMP Error: "};
-      e << SDL_GetError();
-      SDL_DestroyRenderer(this->renderer);
-      SDL_DestroyWindow(this->window);
-      SDL_Quit();
-      throw e;
-    }
-
-    this->bitmapTex = SDL_CreateTextureFromSurface(this->renderer, bitmapSurface);
-    SDL_FreeSurface(bitmapSurface);
+    // @TODO Use SDL_GL_SetSwapInterval() to set vsync.
+    
+    // std::string imagePath = getResourcePath() + "screen-test.bmp";
   };
 
   void OSGraphics::drawExample()
   {
     // Draw to backbuffer.
-    SDL_RenderCopy(this->renderer, this->bitmapTex, NULL, NULL);
+    
   };
   
   void OSGraphics::render() {
     // Present the backbuffer, removing the previous one from screen.
-    SDL_RenderPresent(this->renderer);
+    SDL_GL_SwapWindow(this->window);
     // Clear backbuffer.
-    SDL_RenderClear(this->renderer);
+    // SDL_RenderClear(this->renderer);
   };
   
   void OSGraphics::windowMinimize()
@@ -128,8 +112,7 @@ namespace Cuttlefish
   
   void OSGraphics::freeResources()
   {
-    SDL_DestroyTexture(this->bitmapTex);
-    SDL_DestroyRenderer(this->renderer);
+    SDL_GL_DeleteContext(this->glcontext);
     SDL_DestroyWindow(this->window);
   };
   

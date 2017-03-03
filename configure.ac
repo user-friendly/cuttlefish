@@ -38,7 +38,8 @@ AC_CHECK_HEADERS([gsl/gsl gsl/gsl_algorithm gsl/gsl_assert gsl/gsl_byte gsl/gsl_
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for libraries.
-dnl AX_PTHREAD
+AX_CHECK_GL()
+
 AX_BOOST_BASE([1.63],
         [],
         [AC_MSG_ERROR([Minimal Boost library requirments not met.])
@@ -88,6 +89,10 @@ echo \
  CXXFLAGS_PCH: ${CXXFLAGS_PCH}
  PCH_FILENAME: ${PCH_FILENAME}
  PCH_SOURCE_FILENAME: ${PCH_SOURCE_FILENAME}
+
+ -- GL
+ GL_CFLAGS: ${GL_CFLAGS}
+ GL_LIBS: ${GL_LIBS}
 
  -- Boost
  BOOST_CPPFLAGS: ${BOOST_CPPFLAGS}
