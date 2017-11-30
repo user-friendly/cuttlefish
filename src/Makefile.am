@@ -33,7 +33,8 @@ fishy_LDADD = $(LDADD) \
                $(BOOST_DATE_TIME_LIB) \
 			   $(BOOST_CHRONO_LIB) \
 			   $(BOOST_LOG_LIB) \
-			   $(BOOST_THREAD_LIB)
+			   $(BOOST_THREAD_LIB) \
+			   -llibxml++-2.6
 
 # PCH_FILENAME = std.hpp.(pch|gch)
 # AM error: configure substitutions are not allowed in _SOURCES variables

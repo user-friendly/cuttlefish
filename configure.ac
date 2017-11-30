@@ -17,7 +17,7 @@ AX_CHECK_ENABLE_DEBUG([no], [DEBUG])
 AX_CHECK_ENABLE_PEDANTIC([no])
 
 # Checks for programs.
-AC_PROG_CXX([clang++ c++ g++ gcc])
+AC_PROG_CXX([clang++ c++ g++])
 AC_PROG_INSTALL
 
 # Enable PCH.
@@ -29,10 +29,18 @@ AC_LANG([C++])
 # C++ checks.
 AX_CXX_COMPILE_STDCXX_14([noext], [mandatory])
 
+#AC_CHECK_HEADERS([libxml++/libxml++.h],
+#        [],
+#        [AC_MSG_ERROR([libxml++-2.6 library not found.])
+#])
+dnl AX_CHECK_LIBRARY([LIBXMLPP], [/usr/include/libxml++-2.6/libxml++/libxml++.h], [libxml++-2.6], [],
+dnl         [AC_MSG_ERROR([libxml++-2.6 library not found.])
+dnl ])
+
 # Checks for header files.
 AC_CHECK_HEADERS([gsl/gsl gsl/gsl_algorithm gsl/gsl_assert gsl/gsl_byte gsl/gsl_util gsl/multi_span gsl/span gsl/string_span],
-        [],
-        [AC_MSG_ERROR([GSL support headers missing.])
+                          [],
+                          [AC_MSG_ERROR([GSL support headers missing.])
 ])
 
 # Checks for typedefs, structures, and compiler characteristics.

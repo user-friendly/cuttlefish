@@ -17,12 +17,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 int main(int argc, char* argv[]) {
 #endif
   printLegal();
-
+  
   try {
-    
-    Cuttlefish::Game game;
 
-    game.start();
+    xmlpp::DomParser parser;
+    
+    // Cuttlefish::Game game;
+
+    // game.start();
     
   }
   catch (Cuttlefish::Exception e) {

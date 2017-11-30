@@ -83,6 +83,9 @@ namespace Cuttlefish
       throw e;
     }
     // @TODO Use SDL_GL_SetSwapInterval() to set vsync.
+
+    // Set clear color.
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     
     // std::string imagePath = getResourcePath() + "screen-test.bmp";
   };
@@ -90,10 +93,22 @@ namespace Cuttlefish
   void OSGraphics::drawExample()
   {
     // Draw to backbuffer.
-    
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Draw a Red 1x1 Square centered at origin
+    glBegin(GL_QUADS);              // Each set of 4 vertices form a quad
+    glColor3f(1.0f, 0.0f, 0.0f); // Red
+    glVertex2f(-0.5f, -0.5f);    // x, y
+    glVertex2f( 0.5f, -0.5f);
+    glVertex2f( 0.5f,  0.5f);
+    glVertex2f(-0.5f,  0.5f);
+    glEnd();
+
+    glFlush();
   };
   
   void OSGraphics::render() {
+    this->drawExample();
     // Present the backbuffer, removing the previous one from screen.
     SDL_GL_SwapWindow(this->window);
     // Clear backbuffer.
