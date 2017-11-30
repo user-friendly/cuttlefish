@@ -29,14 +29,6 @@ AC_LANG([C++])
 # C++ checks.
 AX_CXX_COMPILE_STDCXX_14([noext], [mandatory])
 
-#AC_CHECK_HEADERS([libxml++/libxml++.h],
-#        [],
-#        [AC_MSG_ERROR([libxml++-2.6 library not found.])
-#])
-dnl AX_CHECK_LIBRARY([LIBXMLPP], [/usr/include/libxml++-2.6/libxml++/libxml++.h], [libxml++-2.6], [],
-dnl         [AC_MSG_ERROR([libxml++-2.6 library not found.])
-dnl ])
-
 # Checks for header files.
 AC_CHECK_HEADERS([gsl/gsl gsl/gsl_algorithm gsl/gsl_assert gsl/gsl_byte gsl/gsl_util gsl/multi_span gsl/span gsl/string_span],
                           [],
@@ -58,6 +50,10 @@ AX_BOOST_DATE_TIME
 AX_BOOST_CHRONO
 AX_BOOST_LOG
 AX_BOOST_THREAD
+
+dnl Package checks.
+dnl Check for LibXML 2
+PKG_CHECK_MODULES([LIBXML2], [libxml-2.0])
 
 dnl Check for SDL
 AM_PATH_SDL2(2.0.4,

@@ -14,7 +14,7 @@
 # AM_CXXFLAGS = -DBOOST_ASIO_HAS_MOVE
 
 AM_CFLAGS = -I$(top_srcdir)/include
-AM_CXXFLAGS = $(BOOST_CPPFLAGS) -I$(top_srcdir)/include
+AM_CXXFLAGS = $(LIBXML2_CFLAGS) $(BOOST_CPPFLAGS) -I$(top_srcdir)/include
 AM_LDFLAGS = $(BOOST_LDFLAGS)
 
 pch_files = *.hpp.?ch *.hpp.?ch
@@ -34,17 +34,14 @@ fishy_LDADD = $(LDADD) \
 			   $(BOOST_CHRONO_LIB) \
 			   $(BOOST_LOG_LIB) \
 			   $(BOOST_THREAD_LIB) \
-			   -llibxml++-2.6
+			   $(LIBXML2_LIBS)
 
 # PCH_FILENAME = std.hpp.(pch|gch)
 # AM error: configure substitutions are not allowed in _SOURCES variables
 nodist_fishy_SOURCES = $(pch_files)
 
-BUILT_SOURCES = $(PCH_FILENAME) data
+BUILT_SOURCES = $(PCH_FILENAME)
 CLEANFILES = $(pch_files)
-
-data:
-	ln -s $(abs_top_srcdir)/data data
 
 # Precompiled header file.
 $(PCH_FILENAME): $(PCH_SOURCE)

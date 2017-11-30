@@ -72,7 +72,7 @@
 // SDL2 headers.
 #include <SDL.h>
 
-// C++ wrapper for LibXML2.
-#include <libxml++/libxml++.h>
+//LibXML 2.0 headers.
+#include <libxml/xmlreader.h>
 
 #endif /* STD_HPP_ */

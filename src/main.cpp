@@ -20,7 +20,11 @@ int main(int argc, char* argv[]) {
   
   try {
 
-    xmlpp::DomParser parser;
+    xmlTextReaderPtr reader = nullptr;
+
+    if (reader != nullptr) {
+      xmlFreeTextReader(reader);
+    }
     
     // Cuttlefish::Game game;
 
