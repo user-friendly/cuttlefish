@@ -17,7 +17,9 @@ AX_CHECK_ENABLE_DEBUG([no], [DEBUG])
 AX_CHECK_ENABLE_PEDANTIC([no])
 
 # Checks for programs.
+AC_PROG_CC([clang gcc])
 AC_PROG_CXX([clang++ c++ g++])
+AC_PROG_CPP([clang gcc])
 AC_PROG_INSTALL
 
 # Enable PCH.
