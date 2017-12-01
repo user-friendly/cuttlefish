@@ -7,12 +7,14 @@ if [ ! -f project-config.jam ]; then
 fi
 
 echo "will execute: "
+echo "./b2 $@ variant=release link=shared runtime-link=shared threading=multi headers"
 echo "./b2 $@ variant=release link=shared runtime-link=shared threading=multi install"
 
 while true; do
     read -p "do you want to compile and install Boost? " yn
     case $yn in
         [Yy]* )
+            ./b2 $@ variant=release link=shared runtime-link=shared threading=multi headers
             ./b2 $@ variant=release link=shared runtime-link=shared threading=multi install
             break;;
         [Nn]* ) exit;;

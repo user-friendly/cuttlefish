@@ -14,7 +14,7 @@ echo "will execute: "
 echo "./bootstrap.sh --prefix=$INSTALL_DIR  --with-libraries=$WITH_LIBS -with-toolset=clang"
 
 while true; do
-    read -p "do you want to compile and install Boost? " yn
+    read -p "do you want to prepare Boost for building? " yn
     case $yn in
         [Yy]* )
             ./bootstrap.sh --prefix=$INSTALL_DIR  --with-libraries=$WITH_LIBS -with-toolset=clang
