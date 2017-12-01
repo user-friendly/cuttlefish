@@ -8,16 +8,16 @@ if [ ! -d "$INSTALL_DIR" ]; then
     exit 1
 fi
 
-WITH_LIBS="--with-system --with-thread --with-date_time --with-regex --with-log --with-chrono --with-filesystem"
+WITH_LIBS="system,thread,date_time,regex,log,chrono,filesystem"
 
 echo "will execute: "
-echo "./b2 --prefix=$INSTALL_DIR dll-path=$INSTALL_DIR/lib $WITH_LIBS toolset=clang variant=release link=shared runtime-link=shared threading=multi $2"
+echo "./bootstrap.sh --prefix=$INSTALL_DIR  --with-libraries=$WITH_LIBS -with-toolset=clang"
 
 while true; do
     read -p "do you want to compile and install Boost? " yn
     case $yn in
         [Yy]* )
-            ./b2 --prefix=$INSTALL_DIR dll-path=$INSTALL_DIR/lib $WITH_LIBS toolset=clang variant=release link=shared runtime-link=shared threading=multi $2
+            ./bootstrap.sh --prefix=$INSTALL_DIR  --with-libraries=$WITH_LIBS -with-toolset=clang
             break;;
         [Nn]* ) exit;;
         * ) echo "Please answer yes or no.";;

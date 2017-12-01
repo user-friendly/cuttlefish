@@ -6,8 +6,6 @@
 /[Dd]ebug
 /[Rr]elease
 
-# 
-
 # GNU GCC precompiled header files
 *.gch
 
