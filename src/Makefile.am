@@ -29,7 +29,7 @@ fishy_SOURCES = main.cpp \
 fishy_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)
 fishy_LDADD = $(LDADD) \
                $(BOOST_SYSTEM_LIB) \
-               $(BOOST_FILE_SYSTEM_LIB) \
+               $(BOOST_FILESYSTEM_LIB) \
                $(BOOST_DATE_TIME_LIB) \
 			   $(BOOST_CHRONO_LIB) \
 			   $(BOOST_LOG_LIB) \

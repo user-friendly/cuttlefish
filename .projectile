@@ -1,0 +1,14 @@
+-/autom4te.cache
+-/bin
+-/build-aux
+-/libs/lib
+-*.log
+-*.sln
+-.git
+-/documentation
+-/doc
+-/Debug
+-/Release
+-/GPATH
+-/GRTAGS
+-/GTAGS
