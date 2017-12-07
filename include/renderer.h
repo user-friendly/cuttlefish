@@ -16,7 +16,6 @@ namespace cuttlefish
       gsl::owner<SDL_Window> *window;
       gsl::owner<SDL_GLContext> glcontext;
       
-      
       void FreeResources();
     public:
       Renderer();

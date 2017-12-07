@@ -32,6 +32,7 @@ bin_PROGRAMS = fishy
 fishy_SOURCES = main.cc \
 		exception.cc \
 		resource.cc \
+        resource-xml.cc \
 		game.cc \
 		renderer.cc
 
