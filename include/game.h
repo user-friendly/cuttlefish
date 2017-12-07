@@ -6,10 +6,10 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "std.hpp"
-#include "OSGraphics.hpp"
+#include "std.h"
+#include "renderer.h"
 
-namespace Cuttlefish {
+namespace cuttlefish {
 	class Game {
     protected:
       /**
@@ -21,7 +21,7 @@ namespace Cuttlefish {
        */
       bool render = true;
       
-      OSGraphics graphics;
+      Renderer graphics;
 	public:
       ~Game();
       

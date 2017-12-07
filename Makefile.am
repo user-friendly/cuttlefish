@@ -10,7 +10,9 @@ all: fishy
 CLEANFILES = fishy
 
 fishy:
-	ln -s $(abs_top_builddir)/src/fishy fishy
+	if [ ! -f fishy ]; then \
+	    ln -s $(abs_top_builddir)/src/fishy fishy; \
+    fi;
 	if [ ! -d $(abs_top_builddir)/data ]; then \
 		ln -s $(abs_top_srcdir)/data $(abs_top_builddir)/data; \
 	fi;

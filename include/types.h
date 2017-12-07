@@ -6,9 +6,9 @@
 #ifndef TYPEALIAS_HPP
 #define TYPEALIAS_HPP
 
-#include "std.hpp"
+#include "std.h"
 
-namespace Cuttlefish
+namespace cuttlefish
 {
   using String = std::string;
 }

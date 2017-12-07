@@ -17,26 +17,31 @@ AM_CFLAGS = -I$(top_srcdir)/include
 AM_CXXFLAGS = $(LIBXML2_CFLAGS) $(BOOST_CPPFLAGS) -I$(top_srcdir)/include
 AM_LDFLAGS = $(BOOST_LDFLAGS)
 
-pch_files = *.hpp.?ch *.hpp.?ch
-
-bin_PROGRAMS = fishy
-fishy_SOURCES = main.cpp \
-		Exception.cpp \
-		Resource.cpp \
-		Game.cpp \
-		OSGraphics.cpp
-#fishy_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
-fishy_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)
-fishy_LDADD = $(LDADD) \
-               $(BOOST_SYSTEM_LIB) \
+# Logging lib requires Boost's atomic, probably because it's multi-threaded.
+AM_BOOST_LIBS = $(BOOST_SYSTEM_LIB) \
                $(BOOST_FILESYSTEM_LIB) \
                $(BOOST_DATE_TIME_LIB) \
 			   $(BOOST_CHRONO_LIB) \
-			   $(BOOST_LOG_LIB) \
+			   $(BOOST_LOG_LIB) -lboost_atomic \
 			   $(BOOST_THREAD_LIB) \
+			   $(BOOST_REGEX_LIB)
+
+pch_files = *.h.?ch *.h.?ch
+
+bin_PROGRAMS = fishy
+fishy_SOURCES = main.cc \
+		exception.cc \
+		resource.cc \
+		game.cc \
+		renderer.cc
+
+fishy_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
+fishy_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)
+fishy_LDADD = $(LDADD) \
+               $(AM_BOOST_LIBS) \
 			   $(LIBXML2_LIBS)
 
-# PCH_FILENAME = std.hpp.(pch|gch)
+# PCH_FILENAME = std.h.(pch|gch)
 # AM error: configure substitutions are not allowed in _SOURCES variables
 nodist_fishy_SOURCES = $(pch_files)
 
@@ -47,5 +52,5 @@ CLEANFILES = $(pch_files)
 $(PCH_FILENAME): $(PCH_SOURCE)
 	@printf "%s\n" "-----------------------------------------------------"
 	@printf "%s: %s\n" "Create precompiled header: " $<
-	$(CXXCOMPILE) -c $< -o $@
+	$(CXXCOMPILE) -x c++-header -c $< -o $@
 	@printf "%s\n" "-----------------------------------------------------"

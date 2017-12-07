@@ -4,7 +4,7 @@
 AC_PREREQ([2.68])
 AC_INIT([Cuttlefish], [0.1.experimental], [pivanov@foobar.ninja])
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_SRCDIR([src/main.cpp])
+AC_CONFIG_SRCDIR([src/main.cc])
 AC_CONFIG_HEADERS([config.h])
 # M4 macros specific to this project.
 AC_CONFIG_MACRO_DIR([m4-project])
@@ -23,7 +23,7 @@ AC_PROG_CPP([clang gcc])
 AC_PROG_INSTALL
 
 # Enable PCH.
-AX_PRECOMPILED_HEADERS([std.hpp])
+AX_PRECOMPILED_HEADERS([std.h])
 
 # Checks for languages.
 AC_LANG([C++])
@@ -52,7 +52,6 @@ AX_BOOST_DATE_TIME
 AX_BOOST_CHRONO
 AX_BOOST_LOG
 AX_BOOST_THREAD
-AX_BOOST_ATOMIC
 AX_BOOST_REGEX
 
 dnl Package checks.

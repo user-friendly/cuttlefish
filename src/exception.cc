@@ -3,9 +3,9 @@
  * Exception definition file.
  */
 
-#include "Exception.hpp"
+#include "exception.h"
 
-namespace Cuttlefish
+namespace cuttlefish
 {
   Exception::Exception() :
     msg("Undefined error")

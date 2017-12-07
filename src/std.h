@@ -1,5 +1,5 @@
 /*
- * File std.hpp
+ * File std.h
  *
  * Standard template library header files.
  *
@@ -16,5 +16,5 @@
 
 #ifndef STD_HPP_
 #pragma message ("Not using the precompiled version of this file!")
-#include "../std.hpp"
+#include "../std.h"
 #endif

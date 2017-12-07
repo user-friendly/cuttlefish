@@ -6,9 +6,9 @@
 #ifndef RESOURCE_HPP
 #define RESOURCE_HPP
 
-#include "std.hpp"
+#include "std.h"
 
-namespace Cuttlefish {
+namespace cuttlefish {
 
   /**
    * Get the resource path for resources located in res/subDir

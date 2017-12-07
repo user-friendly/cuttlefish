@@ -1,51 +1,50 @@
 /**
  * @file
- * OSGraphics declaration file.
+ * Renderer declaration file.
  */
 
 #ifndef OSGRAPHICS_HPP
 #define OSGRAPHICS_HPP
 
-#include "std.hpp"
+#include "std.h"
 
-namespace Cuttlefish
+namespace cuttlefish
 {
-	class OSGraphics
+	class Renderer
 	{
     protected:
       gsl::owner<SDL_Window> *window;
       gsl::owner<SDL_GLContext> glcontext;
-
       
       
-      void freeResources();
+      void FreeResources();
     public:
-      OSGraphics();
-      ~OSGraphics();
+      Renderer();
+      ~Renderer();
       
       /**
        * Draws and example texture.
        *
        * Note that this function uses SDL renderer.
        */
-      void drawExample();
+      void DrawExample();
       
       /**
        * Render the backbuffer and then clear it.
        *
        * Note that this function uses SDL renderer.
        */
-      void render();
+      void Render();
       
       /**
        * Minimize window.
        */
-      void windowMinimize();
+      void WindowMinimize();
       
       /**
        * Make window fullscreen.
        */
-      void windowFullscreen();
+      void WindowFullscreen();
 	};
 }
 

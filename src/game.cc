@@ -3,13 +3,13 @@
  * Game definition file.
  */
 
-#include "std.hpp"
-#include "Game.hpp"
-#include "Exception.hpp"
+#include "std.h"
+#include "game.h"
+#include "exception.h"
 
-namespace Cuttlefish {
+namespace cuttlefish {
   // @FIXME Handle inputs in a separate class.
-  void handleInputs(Game& game, OSGraphics& graphics);
+  void handleInputs(Game& game, Renderer& graphics);
   
   void Game::start()
   {
@@ -20,8 +20,8 @@ namespace Cuttlefish {
 
       handleInputs(*this, this->graphics);
 
-      this->graphics.drawExample();
-      this->graphics.render();
+      this->graphics.DrawExample();
+      this->graphics.Render();
     }
   }
 
@@ -35,7 +35,7 @@ namespace Cuttlefish {
     std::cout << "Game: free resources and shutdown." << std::endl;
   }
 
-  void handleInputs(Game& game, OSGraphics& graphics)
+  void handleInputs(Game& game, Renderer& graphics)
   {
     SDL_Event event;
     if (SDL_PollEvent(&event)) {
@@ -55,10 +55,10 @@ namespace Cuttlefish {
           game.stop();
           break;
         case SDLK_f:
-          graphics.windowFullscreen();
+          graphics.WindowFullscreen();
           break;
         case SDLK_m:
-          graphics.windowMinimize();
+          graphics.WindowMinimize();
           break;
         case SDLK_e:
           Exception e {"SDL_GetDesktopDisplayMode Error: "};

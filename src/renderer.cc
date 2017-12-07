@@ -1,15 +1,15 @@
 /**
  * @file
- * OSGraphics definition file.
+ * Renderer definition file.
  */
 
-#include "OSGraphics.hpp"
-#include "Exception.hpp"
-#include "Resource.hpp"
+#include "renderer.h"
+#include "exception.h"
+#include "resource.h"
 
-namespace Cuttlefish
+namespace cuttlefish
 {
-  OSGraphics::OSGraphics()
+  Renderer::Renderer()
   {
     {
       std::cout << "SDL running on platform: " << SDL_GetPlatform() << std::endl;
@@ -61,24 +61,24 @@ namespace Cuttlefish
     uint32_t window_flags = SDL_WINDOW_OPENGL
       | SDL_WINDOW_BORDERLESS
       | SDL_WINDOW_FULLSCREEN_DESKTOP;
-    this->window = SDL_CreateWindow("An SDL window!",
+    window = SDL_CreateWindow("An SDL window!",
                                     SDL_WINDOWPOS_CENTERED,
                                     SDL_WINDOWPOS_CENTERED,
                                     dm.w,
                                     dm.h,
                                     window_flags);
-    if (this->window == nullptr) {
+    if (window == nullptr) {
       Exception e {"SDL_CreateWindow Error: "};
       e << SDL_GetError();
       SDL_Quit();
       throw e;
     }
 
-    this->glcontext = SDL_GL_CreateContext(this->window);
-    if (this->glcontext == nullptr) {
+    glcontext = SDL_GL_CreateContext(window);
+    if (glcontext == nullptr) {
       Exception e {"SDL_GL_CreateContext Error: "};
       e << SDL_GetError();
-      SDL_DestroyWindow(this->window);
+      SDL_DestroyWindow(window);
       SDL_Quit();
       throw e;
     }
@@ -90,7 +90,7 @@ namespace Cuttlefish
     // std::string imagePath = getResourcePath() + "screen-test.bmp";
   };
 
-  void OSGraphics::drawExample()
+  void Renderer::DrawExample()
   {
     // Draw to backbuffer.
     glClear(GL_COLOR_BUFFER_BIT);
@@ -107,34 +107,34 @@ namespace Cuttlefish
     glFlush();
   };
   
-  void OSGraphics::render() {
-    this->drawExample();
+  void Renderer::Render() {
+    DrawExample();
     // Present the backbuffer, removing the previous one from screen.
-    SDL_GL_SwapWindow(this->window);
+    SDL_GL_SwapWindow(window);
     // Clear backbuffer.
-    // SDL_RenderClear(this->renderer);
+    // SDL_RenderClear(renderer);
   };
   
-  void OSGraphics::windowMinimize()
+  void Renderer::WindowMinimize()
   {
-    SDL_MinimizeWindow(this->window);
+    SDL_MinimizeWindow(window);
   };
 
-  void OSGraphics::windowFullscreen()
+  void Renderer::WindowFullscreen()
   {
-    SDL_SetWindowFullscreen(this->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
   };
   
-  void OSGraphics::freeResources()
+  void Renderer::FreeResources()
   {
-    SDL_GL_DeleteContext(this->glcontext);
-    SDL_DestroyWindow(this->window);
+    SDL_GL_DeleteContext(glcontext);
+    SDL_DestroyWindow(window);
   };
   
-  OSGraphics::~OSGraphics()
+  Renderer::~Renderer()
   {
-    std::cout << "OSGraphics: free resources and shutdown SDL." << std::endl;
-    this->freeResources();
+    std::cout << "Renderer: free resources and shutdown SDL." << std::endl;
+    FreeResources();
     SDL_Quit();
   };
 }

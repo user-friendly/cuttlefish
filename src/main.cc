@@ -2,9 +2,9 @@
  * @file main.cpp
  * Program entry point.
  */
-#include "std.hpp"
-#include "Game.hpp"
-#include "Exception.hpp"
+#include "std.h"
+#include "game.h"
+#include "exception.h"
 
 /**
  * Print legal information.
@@ -19,19 +19,11 @@ int main(int argc, char* argv[]) {
   printLegal();
   
   try {
-
-    xmlTextReaderPtr reader = nullptr;
-
-    if (reader != nullptr) {
-      xmlFreeTextReader(reader);
-    }
-    
-    // Cuttlefish::Game game;
-
-    // game.start();
+    //cuttlefish::Game game;
+    //game.start();
     
   }
-  catch (Cuttlefish::Exception e) {
+  catch (cuttlefish::Exception e) {
     std::cerr << "Uncaught exceptoin: " << e.message() << std::endl;
     return EXIT_FAILURE;
   }

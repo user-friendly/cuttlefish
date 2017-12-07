@@ -3,9 +3,9 @@
  * Resource definition file.
  */
 
-#include "Resource.hpp"
+#include "resource.h"
 
-namespace Cuttlefish {
+namespace cuttlefish {
   std::string getResourcePath(const std::string &subDir) {
 	//We need to choose the path separator properly based on which
 	//platform we're running on, since Windows uses a different

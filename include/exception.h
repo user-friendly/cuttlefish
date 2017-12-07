@@ -6,9 +6,9 @@
 #ifndef EXCEPTION_HPP
 #define EXCEPTION_HPP
 
-#include "TypeAlias.hpp"
+#include "types.h"
 
-namespace Cuttlefish
+namespace cuttlefish
 {
   class Exception
   {
