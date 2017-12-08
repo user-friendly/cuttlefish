@@ -73,6 +73,8 @@
 #include <SDL.h>
 
 //LibXML 2.0 headers.
-#include <libxml/xmlreader.h>
+#include <libxml/parser.h>
+#include <libxml/xpath.h>
+#include <libxml/xpathInternals.h>
 
 #endif /* STD_HPP_ */

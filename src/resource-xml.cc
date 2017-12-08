@@ -19,10 +19,27 @@ namespace cuttlefish
       throw e;
     }
 
-    xmlNodePtr cur;
-    cur = xmlDocGetRootElement(doc_);
-    if (cur != nullptr) {
-      std::cout << "\nroot node: " << cur->name << std::endl;
+    xmlXPathContextPtr context;
+	xmlXPathObjectPtr result;
+	context = xmlXPathNewContext(doc_);
+    if (context != nullptr) {
+      result = xmlXPathEvalExpression((xmlChar*) "/COLLADA/asset/contributor/author", context);
+      if (result != nullptr) {
+        if (!xmlXPathNodeSetIsEmpty(result->nodesetval)) {
+          xmlChar *text;
+          xmlNodeSetPtr nodeset = result->nodesetval;
+          for (int i = 0; i < nodeset->nodeNr; i++) {
+            text = xmlNodeListGetString(doc_, nodeset->nodeTab[i]->xmlChildrenNode, 1);
+            std::cout << (char*) text << std::endl;
+            xmlFree(text);
+          }
+        }
+        else {
+          std::cout << "no result!" << std::endl;
+        }
+      
+        xmlXPathFreeObject(result); 
+      }
     }
   }
 
