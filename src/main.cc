@@ -3,8 +3,9 @@
  * Program entry point.
  */
 #include "std.h"
-#include "game.h"
 #include "exception.h"
+#include "resource.h"
+#include "game.h"
 
 /**
  * Print legal information.
@@ -21,7 +22,7 @@ int main(int argc, char* argv[]) {
   try {
     //cuttlefish::Game game;
     //game.start();
-    
+    cuttlefish::testXmlReader("pillar.dae");
   }
   catch (cuttlefish::Exception e) {
     std::cerr << "Uncaught exceptoin: " << e.message() << std::endl;

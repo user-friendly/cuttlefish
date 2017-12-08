@@ -69,8 +69,7 @@ LIBS="$LIBS $SDL_LIBS"
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile
-                 src/Makefile])
+AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 
 echo \

@@ -22,6 +22,8 @@ namespace cuttlefish {
    * Paths returned will be Lessons/res/subDir
    */
   std::string getResourcePath(const std::string &subDir = "");
+
+  void testXmlReader(const char *name);
 }
 
 #endif

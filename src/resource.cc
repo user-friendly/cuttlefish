@@ -4,6 +4,7 @@
  */
 
 #include "resource.h"
+#include "resource-xml.h"
 
 namespace cuttlefish {
   std::string getResourcePath(const std::string &subDir) {
@@ -41,5 +42,11 @@ namespace cuttlefish {
 	//If we want a specific subdirectory path in the resource directory
 	//append it to the base path. This would be something like Lessons/res/Lesson0
 	return subDir.empty() ? baseRes : baseRes + subDir + PATH_SEP;
-  } 
+  };
+
+  void testXmlReader(const char *name)
+  {
+    std::string xml_doc_filename = getResourcePath() + name;
+    ResourceXml doc {xml_doc_filename};
+  };
 }
