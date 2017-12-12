@@ -13,14 +13,15 @@ namespace cuttlefish {
    * An XML resource.
    */
   class ResourceXml {
-  private:
-    xmlDocPtr doc_;
-    
   public:
     const std::string kFileName;
-
+    
+  private:
+    rapidxml::file<> buffer_ {kFileName.c_str()};
+    rapidxml::xml_document<> doc_ {};
+    
+  public:
     ResourceXml(const std::string &filename);
-    ~ResourceXml() noexcept;
   };
 }
 

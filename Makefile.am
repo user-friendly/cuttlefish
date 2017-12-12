@@ -16,7 +16,7 @@ ACLOCAL_AMFLAGS = -I m4-project
 # AM_CXXFLAGS = -DBOOST_ASIO_HAS_MOVE
 
 AM_CFLAGS = -I$(top_srcdir)/include
-AM_CXXFLAGS = $(LIBXML2_CFLAGS) $(BOOST_CPPFLAGS) -I$(top_srcdir)/include
+AM_CXXFLAGS = $(BOOST_CPPFLAGS) -I$(top_srcdir)/include
 AM_LDFLAGS = $(BOOST_LDFLAGS)
 
 # Logging lib requires Boost's atomic, probably because it's multi-threaded.
@@ -40,7 +40,7 @@ fishy_SOURCES = src/main.cc \
 
 fishy_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
 fishy_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)
-fishy_LDADD = $(LDADD) $(AM_BOOST_LIBS) $(LIBXML2_LIBS)
+fishy_LDADD = $(LDADD) $(AM_BOOST_LIBS)
 
 # PCH_FILENAME = std.h.(pch|gch)
 # AM error: configure substitutions are not allowed in _SOURCES variables

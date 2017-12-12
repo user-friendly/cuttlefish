@@ -55,8 +55,6 @@ AX_BOOST_THREAD
 AX_BOOST_REGEX
 
 dnl Package checks.
-dnl Check for LibXML 2
-PKG_CHECK_MODULES([LIBXML2], [libxml-2.0])
 
 dnl Check for SDL
 AM_PATH_SDL2(2.0.4,

@@ -72,9 +72,10 @@
 // SDL2 headers.
 #include <SDL.h>
 
-//LibXML 2.0 headers.
-#include <libxml/parser.h>
-#include <libxml/xpath.h>
-#include <libxml/xpathInternals.h>
+// RapidXml
+#include <rapidxml/rapidxml.hpp>
+#include <rapidxml/rapidxml_iterators.hpp>
+#include <rapidxml/rapidxml_utils.hpp>
+#include <rapidxml/rapidxml_print.hpp>
 
 #endif /* STD_HPP_ */
