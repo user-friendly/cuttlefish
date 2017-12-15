@@ -3,27 +3,23 @@
  * Resources declaration file.
  */
 
-#ifndef RESOURCE_HPP
-#define RESOURCE_HPP
+#ifndef RESOURCE_H
+#define RESOURCE_H
 
 #include "std.h"
+#include "mesh.h"
 
 namespace cuttlefish {
-
+  class ResourceMesh {
+    virtual Mesh getMesh() const = 0;
+  };
+  
   /**
-   * Get the resource path for resources located in res/subDir
-   * It's assumed the project directory is structured like:
-   * bin/
-   *  the executable
-   * res/
-   *  Lesson1/
-   *  Lesson2/
-   *
-   * Paths returned will be Lessons/res/subDir
+   * @TODO Is this function even needed?
    */
-  std::string getResourcePath(const std::string &subDir = "");
+  String getResourcePath(const String &subDir = "");
 
-  void testXmlReader(const char *name);
+  void readDaeFile(const String name);
 }
 
-#endif
+#endif // RESOURCE_H

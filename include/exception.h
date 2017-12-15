@@ -3,8 +3,8 @@
  * Exception declaration file.
  */
 
-#ifndef EXCEPTION_HPP
-#define EXCEPTION_HPP
+#ifndef EXCEPTION_H
+#define EXCEPTION_H
 
 #include "types.h"
 
@@ -24,4 +24,4 @@ namespace cuttlefish
   };
 }
 
-#endif
+#endif // EXCEPTION_H

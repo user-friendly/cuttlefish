@@ -3,8 +3,8 @@
  * Renderer declaration file.
  */
 
-#ifndef OSGRAPHICS_HPP
-#define OSGRAPHICS_HPP
+#ifndef RENDERER_H
+#define RENDERER_H
 
 #include "std.h"
 
@@ -47,4 +47,4 @@ namespace cuttlefish
 	};
 }
 
-#endif
+#endif // RENDERER_H

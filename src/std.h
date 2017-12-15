@@ -14,7 +14,7 @@
 //       See 3.20 Using Precompiled Headers of the GCC manual.
 //       See Clang's manual for PCH.
 
-#ifndef STD_HPP_
+#ifndef STD_H_
 #pragma message ("Not using the precompiled version of this file!")
 #include "../std.h"
-#endif
+#endif // STD_H_

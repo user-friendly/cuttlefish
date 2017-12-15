@@ -87,7 +87,7 @@ namespace cuttlefish
     // Set clear color.
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     
-    // std::string imagePath = getResourcePath() + "screen-test.bmp";
+    // String imagePath = getResourcePath() + "screen-test.bmp";
   };
 
   void Renderer::DrawExample()

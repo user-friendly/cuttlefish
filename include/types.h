@@ -3,14 +3,18 @@
  * Type aliases declaration file.
  */
 
-#ifndef TYPEALIAS_HPP
-#define TYPEALIAS_HPP
+#ifndef TYPEALIAS_H
+#define TYPEALIAS_H
 
 #include "std.h"
 
 namespace cuttlefish
 {
+  // Math related.
+  using FloatArray = std::vector<float>;
+  
+  // String related.
   using String = std::string;
 }
 
-#endif
+#endif // TYPEALIAS_H

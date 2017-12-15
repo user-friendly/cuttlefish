@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
   try {
     //cuttlefish::Game game;
     //game.start();
-    cuttlefish::testXmlReader("cube.dae");
+    cuttlefish::readDaeFile("cube.dae");
   }
   catch (cuttlefish::Exception e) {
     std::cerr << "Uncaught exceptoin: " << e.message() << std::endl;

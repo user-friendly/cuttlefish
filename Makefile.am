@@ -34,7 +34,7 @@ bin_PROGRAMS = fishy
 fishy_SOURCES = src/main.cc \
             src/exception.cc \
             src/resource.cc \
-            src/resource-xml.cc \
+            src/resource-collada.cc \
             src/game.cc \
             src/renderer.cc
 

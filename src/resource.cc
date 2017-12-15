@@ -4,10 +4,10 @@
  */
 
 #include "resource.h"
-#include "resource-xml.h"
+#include "resource-collada.h"
 
 namespace cuttlefish {
-  std::string getResourcePath(const std::string &subDir) {
+  String getResourcePath(const String &subDir) {
 	//We need to choose the path separator properly based on which
 	//platform we're running on, since Windows uses a different
 	//separator than most systems
@@ -19,7 +19,7 @@ namespace cuttlefish {
 	//This will hold the base resource path: Lessons/res/
 	//We give it static lifetime so that we'll only need to call
 	//SDL_GetBasePath once to get the executable path
-	static std::string baseRes;
+	static String baseRes;
 	if (baseRes.empty()) {
       //SDL_GetBasePath will return NULL if something went wrong in retrieving the path
       char *basePath = SDL_GetBasePath();
@@ -44,9 +44,8 @@ namespace cuttlefish {
 	return subDir.empty() ? baseRes : baseRes + subDir + PATH_SEP;
   };
 
-  void testXmlReader(const char *name)
+  void readDaeFile(const String name)
   {
-    std::string xml_doc_filename = getResourcePath() + name;
-    ResourceXml doc {xml_doc_filename};
+    ResourceCollada dae {getResourcePath() + name};
   };
 }

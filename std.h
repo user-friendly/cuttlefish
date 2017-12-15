@@ -13,8 +13,8 @@
 //       the currently used compiler is GCC and can support PCHs.
 //       See 3.20 Using Precompiled Headers of the GCC manual.
 
-#ifndef STD_HPP_
-#define STD_HPP_
+#ifndef STD_H_
+#define STD_H_
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -79,4 +79,7 @@
 // TODO Only useful for debug builds.
 #include <rapidxml/rapidxml_print.hpp>
 
-#endif /* STD_HPP_ */
+// Generic local types
+#include "types.h"
+
+#endif // STD_H_

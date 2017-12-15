@@ -3,8 +3,8 @@
  * Game declaration file.
  */
 
-#ifndef GAME_HPP
-#define GAME_HPP
+#ifndef GAME_H
+#define GAME_H
 
 #include "std.h"
 #include "renderer.h"
@@ -39,4 +39,4 @@ namespace cuttlefish {
 	};
 }
 
-#endif
+#endif // GAME_H
