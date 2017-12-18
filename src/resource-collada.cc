@@ -16,13 +16,13 @@ namespace cuttlefish
     :kFileName {filename}
   {
     doc_.parse<0>(buffer_.data());
-    xml_node<> *root_ = doc_.first_node("COLLADA");
+    root_ = doc_.first_node("COLLADA");
     if (root_ == nullptr) {
       Exception e {"Collada file missing root element: "};
       e << filename;
       throw e;
     }
-    xml_attribute<> *attr = root_->first_attribute("version");
+    XmlAttr attr = root_->first_attribute("version");
     if (attr == nullptr) {
       Exception e {"Could not determine Collada file version: "};
       e << filename;
@@ -37,15 +37,70 @@ namespace cuttlefish
     }
   }
 
-  Mesh ResourceCollada::getMesh()
+  Mesh ResourceCollada::getMesh() const
   {
-    Mesh tmp {};
-
+    Mesh tmp_mesh {};
+    
     // There can be multiple libraries, but we'll use only the first one.
-    XmlNode lib_geo = root_->first_node("library_geometries");
+    XmlNode tmp_node = root_->first_node("library_geometries"),
+      mesh_node {}, polylist_node {};
+    
+    if (!tmp_node) {
+      throw Exception {"No geometry libraries found."};
+    }
+    tmp_node = tmp_node->first_node("geometry");
+    if (!tmp_node) {
+      throw Exception {"No geometry, in library, found."};
+    }
+    mesh_node = tmp_node->first_node("mesh");
+    if (!mesh_node) {
+      throw Exception {"No mesh, in geometry, found."};
+    }
+    polylist_node = mesh_node->first_node("polylist");
+    if (!polylist_node) {
+      throw Exception {"No polylist, in mesh, found."};
+    }
+
+    tmp_node = mesh_node->first_node("source");
+    if (tmp_node) {
+      tmp_node = tmp_node->first_node("float_array");
+      if (tmp_node) {
+        char *str_end {nullptr};
+        uint16_t count {static_cast<uint16_t>(std::strtoul(tmp_node->first_attribute("count")->value(), &str_end, 10))};
+        std::cout << "source: " << tmp_node->first_attribute("id")->value() << ", count: " << count << std::endl;
+        std::cout << "\tvalues: " << tmp_node->value() << std::endl;
+        
+        std::istringstream raw_floats {tmp_node->value()};
+        FloatArray fa {std::istream_iterator<float>(raw_floats), std::istream_iterator<float>()};
+        std::cout << "\tvalues: ";
+        for (auto &val : fa) {
+          std::cout << val << " ";
+        }
+        std::cout << std::endl;
+      }
+    }
+
+    tmp_node = mesh_node->first_node("source")->next_sibling("source");
+    if (tmp_node) {
+      tmp_node = tmp_node->first_node("float_array");
+      if (tmp_node) {
+        char *str_end {nullptr};
+        uint16_t count {static_cast<uint16_t>(std::strtoul(tmp_node->first_attribute("count")->value(), &str_end, 10))};
+        std::cout << "source: " << tmp_node->first_attribute("id")->value() << ", count: " << count << std::endl;
+        std::cout << "\tvalues: " << tmp_node->value() << std::endl;
+        
+        std::istringstream raw_floats {tmp_node->value()};
+        FloatArray fa {std::istream_iterator<float>(raw_floats), std::istream_iterator<float>()};
+        std::cout << "\tvalues: ";
+        for (auto &val : fa) {
+          std::cout << val << " ";
+        }
+        std::cout << std::endl;
+      }
+    }
     
     
     // @TODO Will the POD object be moved or copied?
-    return tmp;
+    return tmp_mesh;
   }
 }

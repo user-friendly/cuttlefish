@@ -20,16 +20,17 @@ namespace cuttlefish {
     const String kFileName;
     
   private:
-    using XmlNode = rapidxml::xml_node<>;
+    using XmlNode = rapidxml::xml_node<> *;
+    using XmlAttr = rapidxml::xml_attribute<> *;
     
     // @TODO Figure out what character type to use.
     rapidxml::file<> buffer_ {kFileName.c_str()};
     rapidxml::xml_document<> doc_ {};
-    XmlNode *root_ {};
+    XmlNode root_ {};
     
   public:
     ResourceCollada(const String &filename);
-    Mesh getMesh();
+    Mesh getMesh() const;
   };
 }
 

@@ -47,5 +47,6 @@ namespace cuttlefish {
   void readDaeFile(const String name)
   {
     ResourceCollada dae {getResourcePath() + name};
+    Mesh mesh = dae.getMesh();
   };
 }
