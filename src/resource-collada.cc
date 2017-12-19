@@ -61,6 +61,25 @@ namespace cuttlefish
       throw Exception {"No polylist, in mesh, found."};
     }
 
+    String semantic_vertex {"VERTEX"}, semantic_normal {"NORMAL"}, semantic {};
+    XmlNode source_vertex {}, source_normals {};
+
+    if (polylist_node->first_node("input") && polylist_node->first_node("input")->first_attribute("semantic")) {
+      semantic = polylist_node->first_node("input")->first_attribute("semantic")->value();
+      
+    }
+    
+    for (tmp_node = polylist_node->first_node("input"); tmp_node; tmp_node = tmp_node->next_sibling("input")) {
+      if (tmp_node->first_attribute("semantic")) {
+        if (semantic_vertex == tmp_node->first_attribute("semantic")->value()) {
+           
+        }
+        else if (semantic_normal == tmp_node->first_attribute("semantic")->value()) {
+          
+        }
+      }
+    }
+
     tmp_node = mesh_node->first_node("source");
     if (tmp_node) {
       tmp_node = tmp_node->first_node("float_array");
@@ -80,6 +99,8 @@ namespace cuttlefish
       }
     }
 
+    
+
     tmp_node = mesh_node->first_node("source")->next_sibling("source");
     if (tmp_node) {
       tmp_node = tmp_node->first_node("float_array");
@@ -98,7 +119,6 @@ namespace cuttlefish
         std::cout << std::endl;
       }
     }
-    
     
     // @TODO Will the POD object be moved or copied?
     return tmp_mesh;

@@ -13,7 +13,12 @@ namespace cuttlefish {
     /**
      * A flat array of points.
      */
-    FloatArray points;
+    FloatArray vertices;
+    
+    /**
+     * A flat array of normals.
+     */
+    FloatArray normals;
   };
 }
 
