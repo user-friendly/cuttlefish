@@ -30,8 +30,43 @@ namespace cuttlefish {
     
   public:
     ResourceCollada(const String &filename);
-    Mesh getMesh() const;
+    cuttlefish::Mesh getMesh() const;
+
+  protected:
+    // The following are nested helper classes.
+    struct Element {
+      String tag;
+      String id;
+      XmlNode node;
+    }
+    
+    struct Geometry : Element {
+      Geometry(XmlNode node);
+      std::vector<Mesh> meshes;
+    };
+
+    struct Mesh : Element {
+      Mesh(XmlNode node);
+      std::vector<Source> sources;
+    };
+
+    struct Source : Element {
+      Source(XmlNode node);
+      FloatArray sequence;
+    };
+
+    struct Vertices : Element {
+      String semantic;
+      std::vector<Source> sources;
+    };
+
+    struct Polylist : Element {
+      String materialId;
+      uint32 count;
+      std::vector<Element> sources;
+    };
   };
+
 }
 
 #endif // RESOURCE_COLLADA_H

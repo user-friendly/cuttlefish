@@ -48,5 +48,17 @@ namespace cuttlefish {
   {
     ResourceCollada dae {getResourcePath() + name};
     Mesh mesh = dae.getMesh();
+
+    std::cout << "cube vertices: ";
+    for (auto &val : mesh.vertices) {
+      std::cout << val << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "cube normals: ";
+    for (auto &val : mesh.normals) {
+      std::cout << val << " ";
+    }
+    std::cout << std::endl;
   };
 }
