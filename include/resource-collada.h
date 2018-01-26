@@ -10,6 +10,10 @@
 #include "resource.h"
 
 namespace cuttlefish {
+  using XmlBase = rapidxml::xml_base<> *;
+  using XmlNode = rapidxml::xml_node<> *;
+  using XmlAttr = rapidxml::xml_attribute<> *;
+
   /**
    * A COLLADA resource.
    */
@@ -19,9 +23,7 @@ namespace cuttlefish {
     const String kVersion {"1.4.1"};
     const String kFileName;
     
-  private:
-    using XmlNode = rapidxml::xml_node<> *;
-    using XmlAttr = rapidxml::xml_attribute<> *;
+  protected:
     
     // @TODO Figure out what character type to use.
     rapidxml::file<> buffer_ {kFileName.c_str()};
@@ -31,23 +33,16 @@ namespace cuttlefish {
   public:
     ResourceCollada(const String &filename);
     cuttlefish::Mesh getMesh() const;
+  };
 
-  protected:
-    // The following are nested helper classes.
+
+  namespace Xml {
     struct Element {
+      Element(XmlNode node);
       String tag;
       String id;
+      String name;
       XmlNode node;
-    }
-    
-    struct Geometry : Element {
-      Geometry(XmlNode node);
-      std::vector<Mesh> meshes;
-    };
-
-    struct Mesh : Element {
-      Mesh(XmlNode node);
-      std::vector<Source> sources;
     };
 
     struct Source : Element {
@@ -56,17 +51,36 @@ namespace cuttlefish {
     };
 
     struct Vertices : Element {
+      Vertices(XmlNode node);
       String semantic;
       std::vector<Source> sources;
     };
 
     struct Polylist : Element {
+      Polylist(XmlNode node);
       String materialId;
-      uint32 count;
+      uint32_t count;
       std::vector<Element> sources;
     };
-  };
 
+    struct Mesh : Element {
+      Mesh(XmlNode node);
+      std::vector<Source> sources;
+      std::vector<Polylist> polylists;
+      std::unique_ptr<Vertices> vertices;
+    };
+
+    struct Geometry : Element {
+      Geometry(XmlNode node);
+      String materialId;
+      uint32_t count;
+      std::vector<Element> sources;
+      std::vector<Mesh> meshes;
+    };
+  }
+
+  String& operator<<(String& str, const XmlBase& base);
+  std::ostream& operator<<(std::ostream& out, const Xml::Element& e);
 }
 
 #endif // RESOURCE_COLLADA_H

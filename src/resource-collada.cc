@@ -61,7 +61,10 @@ namespace cuttlefish
       throw Exception {"No polylist, in mesh, found."};
     }
 
-    // 
+
+    Xml::Geometry e {root_->first_node("library_geometries")->first_node("geometry")};
+    std::cout << e << std::endl;
+    
     std::map<const String, XmlNode> mesh_elements {};
 
     String source_id {}, semantic {};
@@ -128,4 +131,89 @@ namespace cuttlefish
     // @TODO Will the POD object be moved or copied?
     return tmp_mesh;
   }
+
+  
+  Xml::Element::Element(XmlNode node)
+    :node {node}
+  {
+    tag = node->name();
+    XmlAttr attr {node->first_attribute("id")};
+    if (attr && attr->value_size()) {
+      id << attr;
+    }
+    attr = node->first_attribute("name");
+    if (attr && attr->value_size()) {
+      name << attr;
+    }
+  };
+
+  Xml::Source::Source(XmlNode node)
+    :Element {node}
+  {
+    
+  };
+
+  Xml::Vertices::Vertices(XmlNode node)
+    :Element {node}
+  {
+    
+  };
+
+  Xml::Polylist::Polylist(XmlNode node)
+    :Element {node}
+  {
+    
+  };
+
+  Xml::Mesh::Mesh(XmlNode node)
+    :Element {node}
+  {
+    if (tag != "mesh") {
+      throw Exception("Element is not 'mesh'");
+    }
+    XmlNode tmp {};
+    tmp = node->first_node("vertices");
+    if (!tmp) {
+      throw Exception("Mesh has no vertices element");
+    }
+    vertices = std::make_unique<Vertices>(tmp);
+    
+    for (tmp = node->first_node("source"); tmp; tmp = tmp->next_sibling("source")) {
+      sources.push_back(std::move(Source {tmp}));
+    }
+    if (sources.size() <= 0) {
+      throw Exception("Mesh has no source elements");
+    }
+    
+    for (tmp = node->first_node("polylist"); tmp; tmp = tmp->next_sibling("polylist")) {
+      polylists.push_back(std::move(Polylist {tmp}));
+    }
+    if (polylists.size() <= 0) {
+      throw Exception("Mesh has no polylist elements (currently, the only geometric primitive supported)");
+    }
+  };
+
+  Xml::Geometry::Geometry(XmlNode node)
+    :Element {node}
+  {
+    if (tag != "geometry") {
+      throw Exception("Element is not 'geometry'");
+    }
+    XmlNode tmp {};
+    for (tmp = node->first_node("mesh"); tmp; tmp = tmp->next_sibling("mesh")) {
+      meshes.push_back(std::move(Mesh {tmp}));
+    }
+  };
+
+  String& operator<<(String& str, const XmlBase& base) {
+    if (base->value_size() > 0) {
+      str = base->value();
+    }
+    return str;
+  };
+
+  std::ostream& operator<<(std::ostream& out, const Xml::Element& e) {
+    std::cout << "ResourceCollada::Element: " << e.tag << ", id: " << e.id << ", name: " << e.name;
+    return out;
+  };
 }
