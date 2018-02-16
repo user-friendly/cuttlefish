@@ -43,6 +43,7 @@ namespace cuttlefish {
       String id;
       String name;
       XmlNode node;
+      XmlNode extra;
     };
 
     struct Source : Element {
@@ -56,11 +57,23 @@ namespace cuttlefish {
       std::vector<Source> sources;
     };
 
+    struct Input : Element {
+      Input(XmlNode node);
+      String semantic;
+      String sourceId;
+      uint8_t offset;
+    };
+
     struct Polylist : Element {
+      typedef uint16_t int_t;
+      
       Polylist(XmlNode node);
+      // @TODO Replace with proper class.
       String materialId;
       uint32_t count;
-      std::vector<Element> sources;
+      std::vector<Input> inputs;
+      std::vector<int_t> vcounts;
+      std::vector<int_t> indices;
     };
 
     struct Mesh : Element {
@@ -81,6 +94,7 @@ namespace cuttlefish {
 
   String& operator<<(String& str, const XmlBase& base);
   std::ostream& operator<<(std::ostream& out, const Xml::Element& e);
+  std::ostream& operator<<(std::ostream& out, const Xml::Polylist& p);
 }
 
 #endif // RESOURCE_COLLADA_H

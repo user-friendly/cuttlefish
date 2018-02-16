@@ -7,10 +7,12 @@
 #include "resource.h"
 #include "resource-collada.h"
 #include "mesh.h"
+#include "string_utils.h"
 
 namespace cuttlefish
 {
   using namespace rapidxml;
+  using namespace Xml;
   
   ResourceCollada::ResourceCollada(const String &filename)
     :kFileName {filename}
@@ -52,82 +54,22 @@ namespace cuttlefish
     if (!tmp_node) {
       throw Exception {"No geometry, in library, found."};
     }
-    mesh_node = tmp_node->first_node("mesh");
-    if (!mesh_node) {
-      throw Exception {"No mesh, in geometry, found."};
-    }
-    polylist_node = mesh_node->first_node("polylist");
-    if (!polylist_node) {
-      throw Exception {"No polylist, in mesh, found."};
-    }
 
+    Geometry geo {tmp_node};
+    std::cout << "Found geometry: " << geo << std::endl;
 
-    Xml::Geometry e {root_->first_node("library_geometries")->first_node("geometry")};
-    std::cout << e << std::endl;
+    for (const Xml::Mesh& mesh : geo.meshes) {
+      std::cout << "Found mesh: " << mesh << std::endl;
+
+      for (const Source& src : mesh.sources) {
+        std::cout << "\tFound source: " << src << std::endl;
+      }
+      std::cout << "\tFount vertices: " << *mesh.vertices << std::endl;
+      for (const Polylist& poly : mesh.polylists) {
+        std::cout << "\tFound polylist: " << poly << std::endl;
+      }
+    }
     
-    std::map<const String, XmlNode> mesh_elements {};
-
-    String source_id {}, semantic {};
-    std::map<const String, String> semantic_ids {
-      {"VERTEX", {}},
-      {"NORMAL", {}}
-    };
-    
-    for (tmp_node = polylist_node->first_node("input"); tmp_node; tmp_node = tmp_node->next_sibling("input")) {
-      if (tmp_node->first_attribute("semantic")) {
-        semantic = tmp_node->first_attribute("semantic")->value();
-        if (semantic_ids.count(semantic)) {
-          semantic_ids[semantic] = tmp_node->first_attribute("source")->value();
-          semantic_ids[semantic].erase(0, 1);
-        }
-      }
-    }
-
-    XmlNode tmp_node_fa {};
-
-    auto extract_floats = [](XmlNode& node) {
-          char *str_end {nullptr};
-          uint16_t count {static_cast<uint16_t>(std::strtoul(node->first_attribute("count")->value(), &str_end, 10))};
-          std::istringstream raw_floats {node->value()};
-          FloatArray fa {std::istream_iterator<float>(raw_floats), std::istream_iterator<float>()};
-          if (count != fa.size()) {
-            Exception e {"Float array size mismatch, id: "};
-            e << node->first_attribute("id")->value();
-            throw e;
-          }
-          return fa;
-    };
-  
-    
-    for (tmp_node = mesh_node->first_node("source"); tmp_node; tmp_node = tmp_node->next_sibling("source")) {
-      tmp_node_fa = tmp_node->first_node("float_array");
-      if (!tmp_node_fa) {
-        continue;
-      }
-      
-      source_id = tmp_node->first_attribute("id")->value();
-      if (source_id == semantic_ids["VERTEX"]) {
-        String tag = tmp_node->name();
-        if (tag == "vertices") {
-          XmlNode verts = mesh_node->first_node("input");
-          if (verts) {
-            semantic = verts->first_attribute("semantic")->value();
-            if (semantic == "POSITION") {
-              source_id = verts->first_attribute("source")->value();
-              source_id.erase(0, 1);
-              
-            }
-          }
-        }
-        else {
-          tmp_mesh.vertices = extract_floats(tmp_node_fa);
-        }
-      }
-      else if (source_id == semantic_ids["NORMAL"]) {
-        tmp_mesh.normals = extract_floats(tmp_node_fa);
-      }
-    }
-
     // @TODO Will the POD object be moved or copied?
     return tmp_mesh;
   }
@@ -159,10 +101,67 @@ namespace cuttlefish
     
   };
 
+  Xml::Input::Input(XmlNode node)
+    :Element {node}
+  {
+    XmlAttr attr {node->first_attribute("semantic")};
+    if (attr && attr->value_size()) {
+      semantic << attr;
+    }
+    attr = node->first_attribute("source");
+    if (attr && attr->value_size()) {
+      sourceId << attr;
+    }
+    attr = node->first_attribute("offset");
+    if (attr && attr->value_size()) {
+      offset = boost::lexical_cast<uint8_t>(attr->value());
+    }
+  };
+
   Xml::Polylist::Polylist(XmlNode node)
     :Element {node}
   {
-    
+    XmlAttr attr {node->first_attribute("count")};
+    if (attr && attr->value_size()) {
+      count = boost::lexical_cast<uint32_t>(attr->value());
+    }
+    attr = node->first_attribute("material");
+    if (attr && attr->value_size()) {
+      materialId = attr->value();
+    }
+    StringView str {};
+    XmlNode tmp_node = node->first_node("vcount");
+    if (tmp_node && tmp_node->value_size()) {
+      str = tmp_node->value();
+      vcounts = parse_integers<int_t>(str);
+    }
+    tmp_node = node->first_node("p");
+    if (tmp_node && tmp_node->value_size()) {
+      str = tmp_node->value();
+      indices = parse_integers<int_t>(str);
+    }
+
+    for (tmp_node = node->first_node("input"); tmp_node; tmp_node = tmp_node->next_sibling("input")) {
+      inputs.push_back(Input {tmp_node});
+    }
+  };
+
+  std::ostream& operator<<(std::ostream& out, const Xml::Polylist& p) {
+    std::cout << "ResourceCollada::Element: " << p.tag << ", id: " << p.id << ", name: " << p.name;
+    std::cout << " material: " << p.materialId << ", count: " << p.count;
+    std::cout << ", vcount: ";
+    for (auto x : p.vcounts) {
+      std::cout << x << " ";
+    }
+    std::cout << " indices: ";
+    for (auto x : p.indices) {
+      std::cout << x << " ";
+    }
+    std::cout << " inputs: ";
+    for (const Input& e : p.inputs) {
+      std::cout << "[" << e.semantic << ", " << e.sourceId << ", " << e.offset << "] ";
+    }
+    return out;
   };
 
   Xml::Mesh::Mesh(XmlNode node)

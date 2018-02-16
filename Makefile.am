@@ -46,6 +46,22 @@ fishy_LDADD = $(LDADD) $(AM_BOOST_LIBS)
 # AM error: configure substitutions are not allowed in _SOURCES variables
 nodist_fishy_SOURCES = $(pch_files)
 
+noinst_PROGRAMS = tests
+
+# Tests portion
+tests_SOURCES = src/tests/tests.cc \
+            src/tests/boost_string_view.cc \
+            src/exception.cc \
+            src/resource.cc \
+            src/resource-collada.cc \
+            src/game.cc \
+            src/renderer.cc
+
+tests_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
+tests_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)
+tests_LDADD = $(LDADD) $(AM_BOOST_LIBS)
+nodist_test_SOURCES = $(pch_files)
+
 BUILT_SOURCES = $(abs_top_builddir)/data $(PCH_FILENAME)
 CLEANFILES = $(pch_files)
 

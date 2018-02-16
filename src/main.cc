@@ -2,6 +2,14 @@
  * @file main.cpp
  * Program entry point.
  */
+
+/**
+ * Copyright (C) 2018 Plamen Ivanov
+ * This program comes with ABSOLUTELY NO WARRANTY;
+ * This is free software, and you are welcome to redistribute it
+ * funder certain conditions; see the license for details.
+ */
+
 #include "std.h"
 #include "exception.h"
 #include "resource.h"
@@ -25,7 +33,7 @@ int main(int argc, char* argv[]) {
     cuttlefish::readDaeFile("cube.dae");
   }
   catch (cuttlefish::Exception e) {
-    std::cerr << "Uncaught exceptoin: " << e.message() << std::endl;
+    std::cerr << "Uncaught inner exceptoin: " << e.message() << std::endl;
     return EXIT_FAILURE;
   }
 
@@ -38,7 +46,7 @@ void printLegal()
 #if defined PACKAGE_NAME && defined PACKAGE_VERSION
   std::cout << PACKAGE_NAME << " " << PACKAGE_VERSION << ' ';
 #endif
-  std::cout << "Copyright (C) 2017 Plamen Ivanov\n\
+  std::cout << "Copyright (C) 2018 Plamen Ivanov\n\
 This program comes with ABSOLUTELY NO WARRANTY;\n\
 This is free software, and you are welcome to redistribute it\n\
 funder certain conditions; see the license for details.\n\n";

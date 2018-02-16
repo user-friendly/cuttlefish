@@ -67,7 +67,10 @@
 #include <gsl/gsl>
 
 // Boost headers.
+#include <boost/utility/string_view.hpp>
 #include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
 
 // SDL2 headers.
 #include <SDL.h>
