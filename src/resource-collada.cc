@@ -64,7 +64,7 @@ namespace cuttlefish
       for (const Source& src : mesh.sources) {
         std::cout << "\tFound source: " << src << std::endl;
       }
-      std::cout << "\tFount vertices: " << *mesh.vertices << std::endl;
+      std::cout << "\tFound vertices: " << mesh.vertices << std::endl;
       for (const Polylist& poly : mesh.polylists) {
         std::cout << "\tFound polylist: " << poly << std::endl;
       }
@@ -96,9 +96,23 @@ namespace cuttlefish
   };
 
   Xml::Vertices::Vertices(XmlNode node)
-    :Element {node}
+    :Element {node}, source {}
   {
-    
+    if (!node) {
+      throw Exception("Mesh has no vertices element");
+    }
+    XmlNode tmp {node->first_node("input")};
+    if (!tmp) {
+      throw Exception("No input element found");
+    }
+    XmlAttr attr {};
+    for (; tmp; tmp = tmp->next_sibling("input")) {
+      attr = tmp->first_attribute("semantic");
+      if (attr && attr->value_size() && std::strcmp(attr->value(), "POSITION") == 0) {
+        source = std::make_unique<Source>(tmp);
+        break;
+      }
+    }
   };
 
   Xml::Input::Input(XmlNode node)
@@ -111,6 +125,9 @@ namespace cuttlefish
     attr = node->first_attribute("source");
     if (attr && attr->value_size()) {
       sourceId << attr;
+      if (sourceId[0] == '#') {
+        sourceId.erase(0, 1);
+      }
     }
     attr = node->first_attribute("offset");
     if (attr && attr->value_size()) {
@@ -165,31 +182,25 @@ namespace cuttlefish
   };
 
   Xml::Mesh::Mesh(XmlNode node)
-    :Element {node}
+    :Element {node}, vertices {node->first_node("vertices")}
   {
     if (tag != "mesh") {
       throw Exception("Element is not 'mesh'");
     }
     XmlNode tmp {};
-    tmp = node->first_node("vertices");
-    if (!tmp) {
-      throw Exception("Mesh has no vertices element");
-    }
-    vertices = std::make_unique<Vertices>(tmp);
-    
     for (tmp = node->first_node("source"); tmp; tmp = tmp->next_sibling("source")) {
       sources.push_back(std::move(Source {tmp}));
     }
     if (sources.size() <= 0) {
       throw Exception("Mesh has no source elements");
     }
-    
     for (tmp = node->first_node("polylist"); tmp; tmp = tmp->next_sibling("polylist")) {
       polylists.push_back(std::move(Polylist {tmp}));
     }
     if (polylists.size() <= 0) {
       throw Exception("Mesh has no polylist elements (currently, the only geometric primitive supported)");
     }
+    
   };
 
   Xml::Geometry::Geometry(XmlNode node)

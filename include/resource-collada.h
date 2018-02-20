@@ -50,11 +50,11 @@ namespace cuttlefish {
       Source(XmlNode node);
       FloatArray sequence;
     };
+    using SourcePtr = std::unique_ptr<Source>;
 
     struct Vertices : Element {
       Vertices(XmlNode node);
-      String semantic;
-      std::vector<Source> sources;
+      SourcePtr source;
     };
 
     struct Input : Element {
@@ -80,7 +80,7 @@ namespace cuttlefish {
       Mesh(XmlNode node);
       std::vector<Source> sources;
       std::vector<Polylist> polylists;
-      std::unique_ptr<Vertices> vertices;
+      Vertices vertices;
     };
 
     struct Geometry : Element {
