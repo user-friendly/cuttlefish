@@ -18,7 +18,7 @@ namespace cuttlefish
   
   // String related.
   using String = std::basic_string<CharT>;
-  using StringView = boost::basic_string_view<CharT>;
+  using StringView = std::basic_string_view<CharT>;
 }
 
 #endif // TYPEALIAS_H

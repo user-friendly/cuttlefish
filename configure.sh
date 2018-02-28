@@ -24,9 +24,17 @@ echo "cd $BUILD_DIR"
 cd $BUILD_DIR
 
 # The configure script should use these environmental variables.
-CC=CLANG
-CXX=clang++
-CPPFLAGS="-I$SOURCE_DIR/libs/include"
+if [ "$CC" = "" ]; then
+    CC=clang
+fi
+if [ "$CXX" = "" ]; then
+    CXX=clang++
+fi
+if [ "$CPPFLAGS" = "" ]; then
+    CPPFLAGS="-I$SOURCE_DIR/libs/include"
+else
+    CPPFLAGS="$CPPFLAGS -I$SOURCE_DIR/libs/include"
+fi
 
 # Use the custom built Boost & SDL libraries.
 # Comment out the following 3 lines to used the system

@@ -29,7 +29,7 @@ AX_PRECOMPILED_HEADERS([std.h])
 AC_LANG([C++])
 
 # C++ checks.
-AX_CXX_COMPILE_STDCXX_14([noext], [mandatory])
+AX_CXX_COMPILE_STDCXX_17([noext], [mandatory])
 
 # Checks for header files.
 AC_CHECK_HEADERS([gsl/gsl gsl/gsl_algorithm gsl/gsl_assert gsl/gsl_byte gsl/gsl_util gsl/multi_span gsl/span gsl/string_span],

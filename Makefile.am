@@ -60,7 +60,7 @@ tests_SOURCES = src/tests/tests.cc \
 tests_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
 tests_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)
 tests_LDADD = $(LDADD) $(AM_BOOST_LIBS)
-nodist_test_SOURCES = $(pch_files)
+nodist_tests_SOURCES = $(pch_files)
 
 BUILT_SOURCES = $(abs_top_builddir)/data $(PCH_FILENAME)
 CLEANFILES = $(pch_files)

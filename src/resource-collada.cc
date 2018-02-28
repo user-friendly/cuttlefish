@@ -79,24 +79,35 @@ namespace cuttlefish
     :node {node}
   {
     tag = node->name();
-    XmlAttr attr {node->first_attribute("id")};
-    if (attr && attr->value_size()) {
-      id << attr;
-    }
-    attr = node->first_attribute("name");
-    if (attr && attr->value_size()) {
-      name << attr;
-    }
+    id << node->first_attribute("id");
+    name << node->first_attribute("name");
   };
 
   Xml::Source::Source(XmlNode node)
     :Element {node}
   {
-    
+    // @TODO Sources can get quite complicated. Only
+    //       implement the "common" case.
+    XmlNode tmp {node->first_node("float_array")};
+    if (!tmp) {
+      std::ostringstream oss {};
+      oss << "Source (" << id << ", " << name << ") does not have float_array element.";
+      throw Exception(oss.str());
+    }
+
+    uint16_t count {0};
+    XmlAttr attr {node->first_attribute("count")};
+    if (attr && attr->value_size()) {
+      count = boost::lexical_cast<uint8_t>(attr->value());
+    }
+    else {
+      throw Exception("Source's float_array does not have a count attribute.");
+    }
+    std::cout << tmp->value() << std::endl;
   };
 
   Xml::Vertices::Vertices(XmlNode node)
-    :Element {node}, source {}
+    :Element {node}, input {}
   {
     if (!node) {
       throw Exception("Mesh has no vertices element");
@@ -105,11 +116,11 @@ namespace cuttlefish
     if (!tmp) {
       throw Exception("No input element found");
     }
-    XmlAttr attr {};
+    String attr {};
     for (; tmp; tmp = tmp->next_sibling("input")) {
-      attr = tmp->first_attribute("semantic");
-      if (attr && attr->value_size() && std::strcmp(attr->value(), "POSITION") == 0) {
-        source = std::make_unique<Source>(tmp);
+      attr << tmp->first_attribute("semantic");
+      if (attr == "POSITION") {
+        input = std::make_unique<Input>(tmp);
         break;
       }
     }
@@ -118,67 +129,38 @@ namespace cuttlefish
   Xml::Input::Input(XmlNode node)
     :Element {node}
   {
-    XmlAttr attr {node->first_attribute("semantic")};
-    if (attr && attr->value_size()) {
-      semantic << attr;
+    semantic << node->first_attribute("semantic");
+    sourceId << node->first_attribute("source");
+    if (!sourceId.empty() && sourceId[0] == '#') {
+      sourceId.erase(0, 1);
     }
-    attr = node->first_attribute("source");
-    if (attr && attr->value_size()) {
-      sourceId << attr;
-      if (sourceId[0] == '#') {
-        sourceId.erase(0, 1);
-      }
-    }
-    attr = node->first_attribute("offset");
-    if (attr && attr->value_size()) {
-      offset = boost::lexical_cast<uint8_t>(attr->value());
+    if (node->first_attribute("offset") && node->first_attribute("offset")->value_size()) {
+      offset = boost::lexical_cast<uint8_t>(node->first_attribute("offset")->value());
     }
   };
 
   Xml::Polylist::Polylist(XmlNode node)
     :Element {node}
   {
+    materialId << node->first_attribute("material");
     XmlAttr attr {node->first_attribute("count")};
-    if (attr && attr->value_size()) {
-      count = boost::lexical_cast<uint32_t>(attr->value());
-    }
-    attr = node->first_attribute("material");
-    if (attr && attr->value_size()) {
-      materialId = attr->value();
-    }
+    count = castToNumber<uint32_t>(node->first_attribute("count"));
+    
     StringView str {};
     XmlNode tmp_node = node->first_node("vcount");
     if (tmp_node && tmp_node->value_size()) {
       str = tmp_node->value();
-      vcounts = parse_integers<int_t>(str);
+      vcounts << str;
     }
     tmp_node = node->first_node("p");
     if (tmp_node && tmp_node->value_size()) {
       str = tmp_node->value();
-      indices = parse_integers<int_t>(str);
+      indices << str;
     }
 
     for (tmp_node = node->first_node("input"); tmp_node; tmp_node = tmp_node->next_sibling("input")) {
       inputs.push_back(Input {tmp_node});
     }
-  };
-
-  std::ostream& operator<<(std::ostream& out, const Xml::Polylist& p) {
-    std::cout << "ResourceCollada::Element: " << p.tag << ", id: " << p.id << ", name: " << p.name;
-    std::cout << " material: " << p.materialId << ", count: " << p.count;
-    std::cout << ", vcount: ";
-    for (auto x : p.vcounts) {
-      std::cout << x << " ";
-    }
-    std::cout << " indices: ";
-    for (auto x : p.indices) {
-      std::cout << x << " ";
-    }
-    std::cout << " inputs: ";
-    for (const Input& e : p.inputs) {
-      std::cout << "[" << e.semantic << ", " << e.sourceId << ", " << e.offset << "] ";
-    }
-    return out;
   };
 
   Xml::Mesh::Mesh(XmlNode node)
@@ -196,11 +178,14 @@ namespace cuttlefish
     }
     for (tmp = node->first_node("polylist"); tmp; tmp = tmp->next_sibling("polylist")) {
       polylists.push_back(std::move(Polylist {tmp}));
+      Polylist& last = polylists.back();
+      for (Input& x : last.inputs) {
+        
+      }
     }
     if (polylists.size() <= 0) {
       throw Exception("Mesh has no polylist elements (currently, the only geometric primitive supported)");
     }
-    
   };
 
   Xml::Geometry::Geometry(XmlNode node)
@@ -216,7 +201,7 @@ namespace cuttlefish
   };
 
   String& operator<<(String& str, const XmlBase& base) {
-    if (base->value_size() > 0) {
+    if (base && base->value_size() > 0) {
       str = base->value();
     }
     return str;
@@ -224,6 +209,24 @@ namespace cuttlefish
 
   std::ostream& operator<<(std::ostream& out, const Xml::Element& e) {
     std::cout << "ResourceCollada::Element: " << e.tag << ", id: " << e.id << ", name: " << e.name;
+    return out;
+  };
+  
+  std::ostream& operator<<(std::ostream& out, const Xml::Polylist& p) {
+    std::cout << "ResourceCollada::Element: " << p.tag << ", id: " << p.id << ", name: " << p.name;
+    std::cout << " material: " << p.materialId << ", count: " << p.count;
+    std::cout << ", vcount: ";
+    for (auto x : p.vcounts) {
+      std::cout << x << " ";
+    }
+    std::cout << " indices: ";
+    for (auto x : p.indices) {
+      std::cout << x << " ";
+    }
+    std::cout << " inputs: ";
+    for (const Input& e : p.inputs) {
+      std::cout << "[" << e.semantic << ", " << e.sourceId << ", " << e.offset << "] ";
+    }
     return out;
   };
 }

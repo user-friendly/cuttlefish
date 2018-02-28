@@ -10,9 +10,9 @@
 #include "resource.h"
 
 namespace cuttlefish {
-  using XmlBase = rapidxml::xml_base<> *;
-  using XmlNode = rapidxml::xml_node<> *;
-  using XmlAttr = rapidxml::xml_attribute<> *;
+  using XmlBase = rapidxml::xml_base<CharT> *;
+  using XmlNode = rapidxml::xml_node<CharT> *;
+  using XmlAttr = rapidxml::xml_attribute<CharT> *;
 
   /**
    * A COLLADA resource.
@@ -44,6 +44,14 @@ namespace cuttlefish {
       String name;
       XmlNode node;
       XmlNode extra;
+      
+      template <typename NumT>
+      NumT castToNumber(const XmlBase &base) {
+        if (base && base->value_size()) {
+          return boost::lexical_cast<NumT>(base->value());
+        }
+        return 0;
+      }
     };
 
     struct Source : Element {
@@ -52,16 +60,17 @@ namespace cuttlefish {
     };
     using SourcePtr = std::unique_ptr<Source>;
 
-    struct Vertices : Element {
-      Vertices(XmlNode node);
-      SourcePtr source;
-    };
-
     struct Input : Element {
       Input(XmlNode node);
       String semantic;
       String sourceId;
       uint8_t offset;
+    };
+    using InputPtr = std::unique_ptr<Input>;
+
+    struct Vertices : Element {
+      Vertices(XmlNode node);
+      InputPtr input;
     };
 
     struct Polylist : Element {
@@ -95,6 +104,9 @@ namespace cuttlefish {
   String& operator<<(String& str, const XmlBase& base);
   std::ostream& operator<<(std::ostream& out, const Xml::Element& e);
   std::ostream& operator<<(std::ostream& out, const Xml::Polylist& p);
+  // Cannot be overloaded - XmlBase is a pointer, both are built-in types.
+  //uint32_t& operator<<(uint32_t& num, const XmlBase& base)
+  
 }
 
 #endif // RESOURCE_COLLADA_H
