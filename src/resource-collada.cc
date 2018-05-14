@@ -95,15 +95,16 @@ namespace cuttlefish
       throw Exception(oss.str());
     }
 
+    // @TODO Mesh positions should have higher counts than normals?
     uint16_t count {0};
-    XmlAttr attr {node->first_attribute("count")};
+    XmlAttr attr {tmp->first_attribute("count")};
     if (attr && attr->value_size()) {
-      count = boost::lexical_cast<uint8_t>(attr->value());
+      count = boost::lexical_cast<uint16_t>(attr->value());
     }
     else {
       throw Exception("Source's float_array does not have a count attribute.");
     }
-    std::cout << tmp->value() << std::endl;
+    sequence << tmp->value();
   };
 
   Xml::Vertices::Vertices(XmlNode node)

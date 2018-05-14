@@ -79,6 +79,7 @@ namespace cuttlefish {
       Polylist(XmlNode node);
       // @TODO Replace with proper class.
       String materialId;
+      // @TODO Count size might be too big. 16 bits might be enough.
       uint32_t count;
       std::vector<Input> inputs;
       std::vector<int_t> vcounts;
