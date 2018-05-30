@@ -73,7 +73,6 @@ namespace cuttlefish
     // @TODO Will the POD object be moved or copied?
     return tmp_mesh;
   }
-
   
   Xml::Element::Element(XmlNode node)
     :node {node}
