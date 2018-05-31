@@ -13,8 +13,8 @@ namespace cuttlefish
 	class Renderer
 	{
     protected:
-      gsl::owner<SDL_Window> *window;
-      gsl::owner<SDL_GLContext> glcontext;
+      SDL_Window* window;
+      SDL_GLContext glcontext;
       
       void FreeResources();
     public:
