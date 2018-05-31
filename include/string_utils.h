@@ -27,7 +27,7 @@ namespace cuttlefish
     }
     return nums;
   };
-  
+
   template<typename StringT>
   std::vector<float>& operator<<(std::vector<float>& nums, const StringT& str) {
     return impl_parse_floats(nums, str);

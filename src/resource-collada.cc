@@ -103,7 +103,8 @@ namespace cuttlefish
     else {
       throw Exception("Source's float_array does not have a count attribute.");
     }
-    sequence << tmp->value();
+    StringView str {tmp->value()};
+    sequence << str;
   };
 
   Xml::Vertices::Vertices(XmlNode node)
@@ -211,6 +212,15 @@ namespace cuttlefish
     std::cout << "ResourceCollada::Element: " << e.tag << ", id: " << e.id << ", name: " << e.name;
     return out;
   };
+
+  std::ostream& operator<<(std::ostream& out, const Xml::Source& s) {
+    std::cout << "ResourceCollada::Element: " << s.tag << ", id: " << s.id << ", name: " << s.name;
+    std::cout << " sequence: ";
+    for (auto x : s.sequence) {
+      std::cout << x << " ";
+    }
+    return out;
+  }
   
   std::ostream& operator<<(std::ostream& out, const Xml::Polylist& p) {
     std::cout << "ResourceCollada::Element: " << p.tag << ", id: " << p.id << ", name: " << p.name;

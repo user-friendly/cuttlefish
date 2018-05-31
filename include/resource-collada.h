@@ -104,6 +104,7 @@ namespace cuttlefish {
 
   String& operator<<(String& str, const XmlBase& base);
   std::ostream& operator<<(std::ostream& out, const Xml::Element& e);
+  std::ostream& operator<<(std::ostream& out, const Xml::Source& e);
   std::ostream& operator<<(std::ostream& out, const Xml::Polylist& p);
   // Cannot be overloaded - XmlBase is a pointer, both are built-in types.
   //uint32_t& operator<<(uint32_t& num, const XmlBase& base)
