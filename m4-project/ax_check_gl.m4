@@ -85,7 +85,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 20
+#serial 22
 
 # example gl program
 m4_define([_AX_CHECK_GL_PROGRAM],
@@ -164,7 +164,7 @@ AC_DEFUN([_AX_CHECK_GL_COMPILE_CV],
 # Link the example program
 AC_DEFUN([_AX_CHECK_GL_LINK],
 [dnl
- _AX_CHECK_GL_SAVE_FLAGS([[CFLAGS],[LIBS]])
+ _AX_CHECK_GL_SAVE_FLAGS([[CFLAGS],[LIBS],[LDFLAGS]])
  AC_LINK_IFELSE([_AX_CHECK_GL_PROGRAM],
                 [ax_check_gl_link_opengl="yes"],
                 [ax_check_gl_link_opengl="no"])
