@@ -5,7 +5,8 @@
 # DESCRIPTION
 #
 #   Enable precompiled headers.
-#   !!!This is a Work In Progress!!!
+#
+#   This is a work in progress.
 #
 #   This macro calls:
 #       
@@ -17,7 +18,7 @@
 #
 # LICENSE
 #
-#   Copyright (c) 2014 Plamen Ivanov <qnq6666@gmail.com>
+#   Copyright (c) 2017 Plamen Ivanov <pivanov@foobar.ninja>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice
@@ -33,12 +34,12 @@ AC_DEFUN([AX_PRECOMPILED_HEADERS],[
     PCH_FILENAME=""
     PCH_SOURCE_FILENAME=""
     
-    AC_MSG_CHECKING([whether $CC has precompiled headers])
+    AC_MSG_CHECKING([whether $CC can generate precompiled headers])
     
     if test "x$ax_pch_file" = "xno"; then
-        AC_MSG_RESULT(yes)
-    else
         AC_MSG_RESULT(no)
+    else
+        AC_MSG_RESULT(yes)
         
         # Defaults to GCC's PCH extension.
         ax_pch_ext="gch"
