@@ -15,8 +15,7 @@ namespace cuttlefish
     protected:
       SDL_Window* window;
       SDL_GLContext glcontext;
-      
-      void FreeResources();
+
     public:
       Renderer();
       ~Renderer();

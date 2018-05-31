@@ -125,16 +125,11 @@ namespace cuttlefish
     SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
   };
   
-  void Renderer::FreeResources()
-  {
-    SDL_GL_DeleteContext(glcontext);
-    SDL_DestroyWindow(window);
-  };
-  
   Renderer::~Renderer()
   {
-    std::cout << "Renderer: free resources and shutdown SDL." << std::endl;
-    FreeResources();
+    std::cout << "Renderer: shutdown SDL." << std::endl;
+    SDL_GL_DeleteContext(glcontext);
+    SDL_DestroyWindow(window);
     SDL_Quit();
   };
 }
