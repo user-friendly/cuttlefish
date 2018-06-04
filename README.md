@@ -24,6 +24,23 @@ TODO Find statistics.
 What are the game needs in terms of performance?
 TODO Based on features?
 
+Code Standards
+--------------
+
+Code style? Not decided yet.
+
+Not allowed, unless necessary:
+* Exceptions
+* Templates (except when really needed)
+* iostream
+* Multiple inheritance
+* Operator overloading (unless very simple)
+* RTTI
+* STL (really?)
+* Stock allocators. Use custom bulk allocators.
+
+These restrictions do not apply to tools, unless there are severe performance issues.
+
 Custom Boost
 ------------
 
