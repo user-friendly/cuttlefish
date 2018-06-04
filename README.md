@@ -8,8 +8,24 @@ A game engine for OpenTTD/Simutrans like games.
 
 The main drive for this project is learning C++, 3D computer graphics and game design.
 
-Custom Boost
+Design direction
 ----------------
+
+I would like for this project to be driven by a Data-Oriented Design. In it's essence DOD focuses on the data at hand and how to most efficiently transform it, not so much on the source code. This project's aim (apart from learning) is to build a game engine for a specific game and not a generic framework for any type of game.
+
+See [Mike Acton](https://dataorientedprogramming.wordpress.com/tag/mike-acton/)'s blog page on DOD.
+
+What hardware platform will this program be running on?
+Currently, it is assumed it will only run on consumer desktop personal computers.
+
+What are average specifications of PCs used for gaming currently?
+TODO Find statistics.
+
+What are the game needs in terms of performance?
+TODO Based on features?
+
+Custom Boost
+------------
 
 Clone the Github repository and make sure all submodules are initialized ([see this link](https://github.com/boostorg/boost/wiki/Getting-Started)). The compilation and installation guide for 1.63.0 can be found [here](http://www.boost.org/doc/libs/1_63_0/more/getting_started/unix-variants.html#prepare-to-use-a-boost-library-binary). Before initializing the submodules, make sure the version you require is checked out (currently, the minimum boost version required is 1.63.0).
 
