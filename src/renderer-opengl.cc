@@ -3,9 +3,8 @@
  * Renderer definition file.
  */
 
-#include "renderer.h"
-#include "exception.h"
-#include "resource.h"
+#include "renderer-opengl.h"
+#include "asset/resource.h"
 
 namespace cuttlefish
 {
@@ -36,26 +35,23 @@ namespace cuttlefish
       | SDL_INIT_EVENTS
       | SDL_INIT_TIMER;
     if (SDL_Init(init_flags) != 0) {
-      Exception e {"SDL Init Error: "};
-      e << SDL_GetError();
-      throw e;
+      std::cerr << "SDL Init Error: " << SDL_GetError() << std::endl;
+      std::exit(1);
     }
 
     // @TODO Get current display, somehow.
     int displayIndex = 0; // SDL_GetWindowDisplayIndex(window);
     if (displayIndex < 0) {
-      Exception e {"SDL_GetWindowDisplayIndex Error: "};
-      e << SDL_GetError();
+      std::cerr << "SDL_GetWindowDisplayIndex Error: " << SDL_GetError() << std::endl;
       SDL_Quit();
-      throw e;
+      std::exit(1);
     }
 
     SDL_DisplayMode dm;
     if (SDL_GetDesktopDisplayMode(displayIndex, &dm) != 0) {
-      Exception e {"SDL_GetDesktopDisplayMode Error: "};
-      e << SDL_GetError();
+      std::cerr << "SDL_GetDesktopDisplayMode Error: " << SDL_GetError();
       SDL_Quit();
-      throw e;
+      std::exit(1);
     }
 
     uint32_t window_flags = SDL_WINDOW_OPENGL
@@ -68,19 +64,17 @@ namespace cuttlefish
                                     dm.h,
                                     window_flags);
     if (window == nullptr) {
-      Exception e {"SDL_CreateWindow Error: "};
-      e << SDL_GetError();
+      std::cerr << "SDL_CreateWindow Error: " << SDL_GetError();
       SDL_Quit();
-      throw e;
+      std::exit(1);
     }
 
     glcontext = SDL_GL_CreateContext(window);
     if (glcontext == nullptr) {
-      Exception e {"SDL_GL_CreateContext Error: "};
-      e << SDL_GetError();
+      std::cerr << "SDL_GL_CreateContext Error: " << SDL_GetError();
       SDL_DestroyWindow(window);
       SDL_Quit();
-      throw e;
+      std::exit(1);
     }
     // @TODO Use SDL_GL_SetSwapInterval() to set vsync.
 

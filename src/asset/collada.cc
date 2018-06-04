@@ -3,18 +3,16 @@
  * Resources - XML definition file.
  */
 
-#include "exception.h"
-#include "resource.h"
-#include "resource-collada.h"
+#include "asset/resource.h"
+#include "asset/collada.h"
 #include "mesh.h"
 #include "string_utils.h"
 
-namespace cuttlefish
-{
+namespace cuttlefish::asset {
   using namespace rapidxml;
   using namespace Xml;
   
-  ResourceCollada::ResourceCollada(const String &filename)
+  Collada::Collada(const String &filename)
     :kFileName {filename}
   {
     doc_.parse<0>(buffer_.data());
@@ -39,7 +37,7 @@ namespace cuttlefish
     }
   }
 
-  cuttlefish::Mesh ResourceCollada::getMesh() const
+  cuttlefish::Mesh Collada::getMesh() const
   {
     cuttlefish::Mesh tmp_mesh {};
     
@@ -103,8 +101,7 @@ namespace cuttlefish
     else {
       throw Exception("Source's float_array does not have a count attribute.");
     }
-    StringView str {tmp->value()};
-    sequence << str;
+    parseFloat(sequence, StringView {tmp->value()});
   };
 
   Xml::Vertices::Vertices(XmlNode node)
@@ -151,12 +148,12 @@ namespace cuttlefish
     XmlNode tmp_node = node->first_node("vcount");
     if (tmp_node && tmp_node->value_size()) {
       str = tmp_node->value();
-      vcounts << str;
+      parseFloat(vcounts, str);
     }
     tmp_node = node->first_node("p");
     if (tmp_node && tmp_node->value_size()) {
       str = tmp_node->value();
-      indices << str;
+      parseFloat(indices, str);
     }
 
     for (tmp_node = node->first_node("input"); tmp_node; tmp_node = tmp_node->next_sibling("input")) {
@@ -209,12 +206,12 @@ namespace cuttlefish
   };
 
   std::ostream& operator<<(std::ostream& out, const Xml::Element& e) {
-    std::cout << "ResourceCollada::Element: " << e.tag << ", id: " << e.id << ", name: " << e.name;
+    std::cout << "Collada::Element: " << e.tag << ", id: " << e.id << ", name: " << e.name;
     return out;
   };
 
   std::ostream& operator<<(std::ostream& out, const Xml::Source& s) {
-    std::cout << "ResourceCollada::Element: " << s.tag << ", id: " << s.id << ", name: " << s.name;
+    std::cout << "Collada::Element: " << s.tag << ", id: " << s.id << ", name: " << s.name;
     std::cout << " sequence: ";
     for (auto x : s.sequence) {
       std::cout << x << " ";
@@ -223,7 +220,7 @@ namespace cuttlefish
   }
   
   std::ostream& operator<<(std::ostream& out, const Xml::Polylist& p) {
-    std::cout << "ResourceCollada::Element: " << p.tag << ", id: " << p.id << ", name: " << p.name;
+    std::cout << "Collada::Element: " << p.tag << ", id: " << p.id << ", name: " << p.name;
     std::cout << " material: " << p.materialId << ", count: " << p.count;
     std::cout << ", vcount: ";
     for (auto x : p.vcounts) {
@@ -238,5 +235,34 @@ namespace cuttlefish
       std::cout << "[" << e.semantic << ", " << e.sourceId << ", " << e.offset << "] ";
     }
     return out;
+  };
+
+  Exception::Exception() :
+    msg("Undefined error")
+  {};
+
+  Exception::Exception(const char* message) :
+    msg(message)
+  {};
+
+  Exception::Exception(const String& message) :
+    msg(message)
+  {};
+
+  String Exception::message()
+  {
+    return this->msg;
+  };
+
+  Exception& Exception::operator<<(const char* append)
+  {
+    this->msg += append;
+    return *this;
+  };
+  
+  Exception& Exception::operator<<(const String& append)
+  {
+    this->msg += append;
+    return *this;
   };
 }

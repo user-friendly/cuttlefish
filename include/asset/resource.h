@@ -9,16 +9,10 @@
 #include "std.h"
 #include "mesh.h"
 
-namespace cuttlefish {
-  class ResourceMesh {
-    virtual Mesh getMesh() const = 0;
-  };
-  
-  /**
-   * @TODO Is this function even needed?
-   */
+namespace cuttlefish::asset {
+  // Gets the game's resources absolute directory path.
   String getResourcePath(const String &subDir = "");
-
+  // Test function. Read a test COLLADA file.
   void readDaeFile(const String name);
 }
 

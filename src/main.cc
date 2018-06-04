@@ -11,8 +11,8 @@
  */
 
 #include "std.h"
-#include "exception.h"
-#include "resource.h"
+#include "asset/resource.h"
+#include "asset/collada.h"
 #include "game.h"
 
 /**
@@ -27,13 +27,13 @@ int main(int argc, char* argv[]) {
 #endif
   printLegal();
   
+  //cuttlefish::Game game;
+  //game.start();
   try {
-    //cuttlefish::Game game;
-    //game.start();
-    cuttlefish::readDaeFile("cube.dae");
+    cuttlefish::asset::readDaeFile("cube.dae");
   }
-  catch (cuttlefish::Exception e) {
-    std::cerr << "Uncaught inner exceptoin: " << e.message() << std::endl;
+  catch (cuttlefish::asset::Exception e) {
+    std::cerr << "Collada exceptoin: " << e.message() << std::endl;
     return EXIT_FAILURE;
   }
 

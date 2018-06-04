@@ -3,10 +3,10 @@
  * Resource definition file.
  */
 
-#include "resource.h"
-#include "resource-collada.h"
+#include "asset/resource.h"
+#include "asset/collada.h"
 
-namespace cuttlefish {
+namespace cuttlefish::asset {
   String getResourcePath(const String &subDir) {
 	//We need to choose the path separator properly based on which
 	//platform we're running on, since Windows uses a different
@@ -46,7 +46,7 @@ namespace cuttlefish {
 
   void readDaeFile(const String name)
   {
-    ResourceCollada dae {getResourcePath() + name};
+    Collada dae {getResourcePath() + name};
     Mesh mesh = dae.getMesh();
 
     std::cout << "cube vertices: ";

@@ -11,6 +11,7 @@
 namespace cuttlefish
 {
   // Math related.
+  using Float = float;
   using FloatArray = std::vector<float>;
 
   // Game wide character type. (Is this a good idea? Probably not.)

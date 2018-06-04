@@ -5,7 +5,6 @@
 
 #include "std.h"
 #include "game.h"
-#include "exception.h"
 
 namespace cuttlefish {
   // @FIXME Handle inputs in a separate class.
@@ -61,9 +60,7 @@ namespace cuttlefish {
           graphics.WindowMinimize();
           break;
         case SDLK_e:
-          Exception e {"SDL_GetDesktopDisplayMode Error: "};
-          e << "Nope, it's a fake exception.";
-          throw e;
+          std::cerr << "SDL_GetDesktopDisplayMode Error: nope, it's a fake exception." << std::endl;
           break;
         // case SDLK_r:
         //   render = !render;

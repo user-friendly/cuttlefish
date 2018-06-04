@@ -3,13 +3,17 @@
  * Resources - COLLADA declaration file.
  */
 
+/**
+ * COLLADA should be used only by tools and not the game engine.
+ */
+
 #ifndef RESOURCE_COLLADA_H
 #define RESOURCE_COLLADA_H
 
 #include "std.h"
-#include "resource.h"
+#include "asset/resource.h"
 
-namespace cuttlefish {
+namespace cuttlefish::asset {
   using XmlBase = rapidxml::xml_base<CharT> *;
   using XmlNode = rapidxml::xml_node<CharT> *;
   using XmlAttr = rapidxml::xml_attribute<CharT> *;
@@ -17,7 +21,7 @@ namespace cuttlefish {
   /**
    * A COLLADA resource.
    */
-  class ResourceCollada : public ResourceMesh {
+  class Collada {
   public:
     // Currently supported version;
     const String kVersion {"1.4.1"};
@@ -31,7 +35,7 @@ namespace cuttlefish {
     XmlNode root_ {};
     
   public:
-    ResourceCollada(const String &filename);
+    Collada(const String &filename);
     cuttlefish::Mesh getMesh() const;
   };
 
@@ -108,7 +112,19 @@ namespace cuttlefish {
   std::ostream& operator<<(std::ostream& out, const Xml::Polylist& p);
   // Cannot be overloaded - XmlBase is a pointer, both are built-in types.
   //uint32_t& operator<<(uint32_t& num, const XmlBase& base)
-  
+
+  class Exception
+  {
+  public:
+    Exception ();
+    Exception (const char* message);
+    Exception (const String& message);
+    String message();
+    Exception& operator<<(const char* append);
+    Exception& operator<<(const String& append);
+  protected:
+    String msg;
+  };
 }
 
 #endif // RESOURCE_COLLADA_H
