@@ -12,14 +12,17 @@ namespace cuttlefish
 {
   // Math related.
   using Float = float;
-  using FloatArray = std::vector<float>;
+  using FloatArray = std::vector<Float>;
+
+  using IndexType = std::uint16_t;
+  using IndexArray = std::vector<IndexType>;
 
   // Game wide character type. (Is this a good idea? Probably not.)
-  using CharT = char;
+  using CharType = char;
   
   // String related.
-  using String = std::basic_string<CharT>;
-  using StringView = std::basic_string_view<CharT>;
+  using String = std::basic_string<CharType>;
+  using StringView = std::basic_string_view<CharType>;
 }
 
 #endif // TYPEALIAS_H

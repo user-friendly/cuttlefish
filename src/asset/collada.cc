@@ -10,8 +10,8 @@
 
 namespace cuttlefish::asset {
   using namespace rapidxml;
-  using namespace Xml;
-  
+
+  // @TODO Don't do data validation in the game engine.
   Collada::Collada(const String &filename)
     :kFileName {filename}
   {
@@ -39,203 +39,87 @@ namespace cuttlefish::asset {
 
   cuttlefish::Mesh Collada::getMesh() const
   {
-    cuttlefish::Mesh tmp_mesh {};
+    XmlNode geometry_node = root_->first_node("library_geometries")->first_node("geometry");
+    XmlNode mesh_node = geometry_node->first_node("mesh");
+    // Probably won't be used?
+    String mesh_name {geometry_node->first_attribute("name")->value()};
+
+    // The float_array element of the vertices and normals.
+    XmlNode vert_node {}, norm_node {};
+    // Face (triangles) count for the whole mesh.
+    std::uint16_t face_count {boost::lexical_cast<std::uint16_t>(mesh_node->first_node("polylist")->first_attribute("count")->value())},
+      // Indices offsets, because COLLADA is that cool.
+      vert_offset {}, norm_offset {},
+      // Counts that will be retrieved from the float_array elements later on.
+      vert_count {}, norm_count {},
+      // Index counts for vertices and normals.
+      vert_index_count {}, norm_index_count {}
+    ;
+    // Set indices counts.
+    vert_index_count = face_count * Mesh::faceVertCount;
+    norm_index_count = face_count * Mesh::faceVertCount;
     
-    // There can be multiple libraries, but we'll use only the first one.
-    XmlNode tmp_node = root_->first_node("library_geometries"),
-      mesh_node {}, polylist_node {};
-    
-    if (!tmp_node) {
-      throw Exception {"No geometry libraries found."};
-    }
-    tmp_node = tmp_node->first_node("geometry");
-    if (!tmp_node) {
-      throw Exception {"No geometry, in library, found."};
-    }
+    // Ignore the vcount - we know we're dealing with triangles and that there are two sets - vectors and normals.
+    IndexArray indices {};
+    indices.reserve(vert_index_count + norm_index_count);
+    // Later on, based on the offsets, this vector will be split by moving it.
+    parseNumberList(indices, mesh_node->first_node("polylist")->first_node("p")->value());
 
-    Geometry geo {tmp_node};
-    std::cout << "Found geometry: " << geo << std::endl;
-
-    for (const Xml::Mesh& mesh : geo.meshes) {
-      std::cout << "Found mesh: " << mesh << std::endl;
-
-      for (const Source& src : mesh.sources) {
-        std::cout << "\tFound source: " << src << std::endl;
+    // The ids are not known in advance, as opposed to the general structure.
+    String vert_id {}, norm_id {};
+    for (XmlNode tmp_node = mesh_node->first_node("polylist")->first_node("input"); tmp_node; tmp_node = tmp_node->next_sibling("input")) {
+      if (std::strcmp(tmp_node->first_attribute("semantic")->value(), "VERTEX") == 0) {
+        vert_id = tmp_node->first_attribute("source")->value();
+        vert_id.erase(0, 1);
+        if (std::strcmp(mesh_node->first_node("vertices")->first_attribute("id")->value(), vert_id.c_str()) == 0) {
+          vert_id = mesh_node->first_node("vertices")->first_node("input")->first_attribute("source")->value();
+          vert_id.erase(0, 1);
+        }
+        vert_offset = boost::lexical_cast<std::uint16_t>(tmp_node->first_attribute("offset")->value());
       }
-      std::cout << "\tFound vertices: " << mesh.vertices << std::endl;
-      for (const Polylist& poly : mesh.polylists) {
-        std::cout << "\tFound polylist: " << poly << std::endl;
+      else if (std::strcmp(tmp_node->first_attribute("semantic")->value(), "NORMAL") == 0) {
+        norm_id = tmp_node->first_attribute("source")->value();
+        norm_id.erase(0, 1);
+        norm_offset = boost::lexical_cast<std::uint16_t>(tmp_node->first_attribute("offset")->value());
       }
     }
-    
-    // @TODO Will the POD object be moved or copied?
-    return tmp_mesh;
-  }
-  
-  Xml::Element::Element(XmlNode node)
-    :node {node}
-  {
-    tag = node->name();
-    id << node->first_attribute("id");
-    name << node->first_attribute("name");
-  };
 
-  Xml::Source::Source(XmlNode node)
-    :Element {node}
-  {
-    // @TODO Sources can get quite complicated. Only
-    //       implement the "common" case.
-    XmlNode tmp {node->first_node("float_array")};
-    if (!tmp) {
-      std::ostringstream oss {};
-      oss << "Source (" << id << ", " << name << ") does not have float_array element.";
-      throw Exception(oss.str());
+    for (XmlNode tmp_node = mesh_node->first_node("source"); tmp_node; tmp_node = tmp_node->next_sibling("source")) {
+      if (std::strcmp(tmp_node->first_attribute("id")->value(), vert_id.c_str()) == 0) {
+        vert_node = tmp_node->first_node("float_array");
+      }
+      else if (std::strcmp(tmp_node->first_attribute("id")->value(), norm_id.c_str()) == 0) {
+        norm_node = tmp_node->first_node("float_array");
+      }
     }
 
-    // @TODO Mesh positions should have higher counts than normals?
-    uint16_t count {0};
-    XmlAttr attr {tmp->first_attribute("count")};
-    if (attr && attr->value_size()) {
-      count = boost::lexical_cast<uint16_t>(attr->value());
+    // Get the number counts.
+    vert_count = boost::lexical_cast<std::uint16_t>(vert_node->first_attribute("count")->value());
+    norm_count = boost::lexical_cast<std::uint16_t>(norm_node->first_attribute("count")->value());
+
+    Mesh mesh {};
+    mesh.vertices.reserve(vert_count);
+    mesh.normals.reserve(norm_count);
+
+    // @TODO Remove debug code.
+    std::cout << mesh.vertices.capacity() << ", " << mesh.normals.capacity() << ", " << mesh.vertIndices.capacity() << ", " << mesh.normIndices.capacity() << std::endl;
+
+    // Finally do the actual data parsing.
+    parseNumberList(mesh.vertices, vert_node->value());
+    parseNumberList(mesh.normals, norm_node->value());
+    if (vert_offset == 0) {
+      std::move(indices.begin(), std::next(indices.begin(), vert_index_count), std::back_inserter(mesh.vertIndices));
+      std::move(std::next(indices.begin(), vert_index_count), std::next(indices.begin(), vert_index_count + norm_index_count), std::back_inserter(mesh.normIndices));
+      return mesh;
     }
     else {
-      throw Exception("Source's float_array does not have a count attribute.");
+      std::move(indices.begin(), std::next(indices.begin(), norm_index_count), std::back_inserter(mesh.normIndices));
+      std::move(std::next(indices.begin(), norm_index_count), std::next(indices.begin(), norm_index_count + vert_index_count), std::back_inserter(mesh.vertIndices));
+      return mesh;
     }
-    parseFloat(sequence, StringView {tmp->value()});
-  };
-
-  Xml::Vertices::Vertices(XmlNode node)
-    :Element {node}, input {}
-  {
-    if (!node) {
-      throw Exception("Mesh has no vertices element");
-    }
-    XmlNode tmp {node->first_node("input")};
-    if (!tmp) {
-      throw Exception("No input element found");
-    }
-    String attr {};
-    for (; tmp; tmp = tmp->next_sibling("input")) {
-      attr << tmp->first_attribute("semantic");
-      if (attr == "POSITION") {
-        input = std::make_unique<Input>(tmp);
-        break;
-      }
-    }
-  };
-
-  Xml::Input::Input(XmlNode node)
-    :Element {node}
-  {
-    semantic << node->first_attribute("semantic");
-    sourceId << node->first_attribute("source");
-    if (!sourceId.empty() && sourceId[0] == '#') {
-      sourceId.erase(0, 1);
-    }
-    if (node->first_attribute("offset") && node->first_attribute("offset")->value_size()) {
-      offset = boost::lexical_cast<uint8_t>(node->first_attribute("offset")->value());
-    }
-  };
-
-  Xml::Polylist::Polylist(XmlNode node)
-    :Element {node}
-  {
-    materialId << node->first_attribute("material");
-    XmlAttr attr {node->first_attribute("count")};
-    count = castToNumber<uint32_t>(node->first_attribute("count"));
-    
-    StringView str {};
-    XmlNode tmp_node = node->first_node("vcount");
-    if (tmp_node && tmp_node->value_size()) {
-      str = tmp_node->value();
-      parseFloat(vcounts, str);
-    }
-    tmp_node = node->first_node("p");
-    if (tmp_node && tmp_node->value_size()) {
-      str = tmp_node->value();
-      parseFloat(indices, str);
-    }
-
-    for (tmp_node = node->first_node("input"); tmp_node; tmp_node = tmp_node->next_sibling("input")) {
-      inputs.push_back(Input {tmp_node});
-    }
-  };
-
-  Xml::Mesh::Mesh(XmlNode node)
-    :Element {node}, vertices {node->first_node("vertices")}
-  {
-    if (tag != "mesh") {
-      throw Exception("Element is not 'mesh'");
-    }
-    XmlNode tmp {};
-    for (tmp = node->first_node("source"); tmp; tmp = tmp->next_sibling("source")) {
-      sources.push_back(std::move(Source {tmp}));
-    }
-    if (sources.size() <= 0) {
-      throw Exception("Mesh has no source elements");
-    }
-    for (tmp = node->first_node("polylist"); tmp; tmp = tmp->next_sibling("polylist")) {
-      polylists.push_back(std::move(Polylist {tmp}));
-      Polylist& last = polylists.back();
-      for (Input& x : last.inputs) {
-        
-      }
-    }
-    if (polylists.size() <= 0) {
-      throw Exception("Mesh has no polylist elements (currently, the only geometric primitive supported)");
-    }
-  };
-
-  Xml::Geometry::Geometry(XmlNode node)
-    :Element {node}
-  {
-    if (tag != "geometry") {
-      throw Exception("Element is not 'geometry'");
-    }
-    XmlNode tmp {};
-    for (tmp = node->first_node("mesh"); tmp; tmp = tmp->next_sibling("mesh")) {
-      meshes.push_back(std::move(Mesh {tmp}));
-    }
-  };
-
-  String& operator<<(String& str, const XmlBase& base) {
-    if (base && base->value_size() > 0) {
-      str = base->value();
-    }
-    return str;
-  };
-
-  std::ostream& operator<<(std::ostream& out, const Xml::Element& e) {
-    std::cout << "Collada::Element: " << e.tag << ", id: " << e.id << ", name: " << e.name;
-    return out;
-  };
-
-  std::ostream& operator<<(std::ostream& out, const Xml::Source& s) {
-    std::cout << "Collada::Element: " << s.tag << ", id: " << s.id << ", name: " << s.name;
-    std::cout << " sequence: ";
-    for (auto x : s.sequence) {
-      std::cout << x << " ";
-    }
-    return out;
+    // @TODO Will the POD object be moved or copied?
+    return mesh;
   }
-  
-  std::ostream& operator<<(std::ostream& out, const Xml::Polylist& p) {
-    std::cout << "Collada::Element: " << p.tag << ", id: " << p.id << ", name: " << p.name;
-    std::cout << " material: " << p.materialId << ", count: " << p.count;
-    std::cout << ", vcount: ";
-    for (auto x : p.vcounts) {
-      std::cout << x << " ";
-    }
-    std::cout << " indices: ";
-    for (auto x : p.indices) {
-      std::cout << x << " ";
-    }
-    std::cout << " inputs: ";
-    for (const Input& e : p.inputs) {
-      std::cout << "[" << e.semantic << ", " << e.sourceId << ", " << e.offset << "] ";
-    }
-    return out;
-  };
 
   Exception::Exception() :
     msg("Undefined error")
