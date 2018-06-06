@@ -94,9 +94,9 @@ namespace cuttlefish
 
     // Prepare the mesh to be displayed.
     mesh = asset::collada::getMeshFromResource("cube.dae");
-    // glGenBuffers(1, &vbuffer);
-    // glBindBuffer(GL_ARRAY_BUFFER, &vbuffer);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(mesh.vertices[0]) * mesh.vertices.size(), mesh.vertices.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &vbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(mesh.vertices[0]) * mesh.vertices.size(), mesh.vertices.data(), GL_STATIC_DRAW);
   };
 
   void Renderer::DrawExample()

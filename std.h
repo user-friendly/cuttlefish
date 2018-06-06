@@ -47,6 +47,11 @@
 #if defined(HAVE_WINDOWS_H) && defined(_WIN32)
   #include <windows.h>
 #endif
+
+// SDL will take care of OS specific OpenGL headers.
+// However, we still need to declare what version we'll need.
+#define GL_GLEXT_PROTOTYPES 1
+#define GL3_PROTOTYPES 1
 /* #ifdef HAVE_GL_GL_H */
 /*   #include <GL/gl.h> */
 /*   #include <GL/glext.h> */
