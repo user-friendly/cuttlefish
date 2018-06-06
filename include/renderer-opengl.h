@@ -7,6 +7,7 @@
 #define RENDERER_H
 
 #include "std.h"
+#include "mesh.h"
 
 namespace cuttlefish
 {
@@ -15,6 +16,9 @@ namespace cuttlefish
     protected:
       SDL_Window* window;
       SDL_GLContext glcontext;
+
+      Mesh mesh;
+      GLuint vbuffer;
 
     public:
       Renderer();

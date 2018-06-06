@@ -5,6 +5,7 @@
 
 #include "renderer-opengl.h"
 #include "asset/resource.h"
+#include "asset/collada.h"
 
 namespace cuttlefish
 {
@@ -54,14 +55,22 @@ namespace cuttlefish
       std::exit(1);
     }
 
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
     uint32_t window_flags = SDL_WINDOW_OPENGL
-      | SDL_WINDOW_BORDERLESS
-      | SDL_WINDOW_FULLSCREEN_DESKTOP;
-    window = SDL_CreateWindow("An SDL window!",
+      // | SDL_WINDOW_BORDERLESS
+      // | SDL_WINDOW_FULLSCREEN_DESKTOP
+      ;
+    window = SDL_CreateWindow("Cuttlefish Pre-Alpha",
                                     SDL_WINDOWPOS_CENTERED,
                                     SDL_WINDOWPOS_CENTERED,
-                                    dm.w,
-                                    dm.h,
+                                    600, 400,
+                                    // dm.w,
+                                    // dm.h,
                                     window_flags);
     if (window == nullptr) {
       std::cerr << "SDL_CreateWindow Error: " << SDL_GetError();
@@ -81,7 +90,13 @@ namespace cuttlefish
     // Set clear color.
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     
-    // String imagePath = getResourcePath() + "screen-test.bmp";
+    // String imagePath = asset::getResourcePath() + "screen-test.bmp";
+
+    // Prepare the mesh to be displayed.
+    mesh = asset::collada::getMeshFromResource("cube.dae");
+    // glGenBuffers(1, &vbuffer);
+    // glBindBuffer(GL_ARRAY_BUFFER, &vbuffer);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(mesh.vertices[0]) * mesh.vertices.size(), mesh.vertices.data(), GL_STATIC_DRAW);
   };
 
   void Renderer::DrawExample()

@@ -27,10 +27,8 @@ int main(int argc, char* argv[]) {
 #endif
   printLegal();
   
-  //cuttlefish::Game game;
-  //game.start();
-
-  cuttlefish::asset::readDaeFile("cube.dae");
+  cuttlefish::Game game;
+  game.start();
 
   std::cout << "Bye!" << std::endl;
   return EXIT_SUCCESS;

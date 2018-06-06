@@ -13,13 +13,21 @@
 #include "std.h"
 #include "asset/resource.h"
 
-namespace cuttlefish::asset {
+namespace cuttlefish::asset::collada {
   using XmlBase = rapidxml::xml_base<CharType> *;
   using XmlNode = rapidxml::xml_node<CharType> *;
   using XmlAttr = rapidxml::xml_attribute<CharType> *;
   
   extern const CharType* kSupportedVersion;
+
+  void debugPrintMesh(const Mesh& mesh);
+  
   Mesh getMesh(const String &filename);
+
+  inline Mesh getMeshFromResource(const String name)
+  {
+    return getMesh(getResourcePath() + name);
+  };
 }
 
 #endif // RESOURCE_COLLADA_H

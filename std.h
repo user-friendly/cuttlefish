@@ -47,13 +47,15 @@
 #if defined(HAVE_WINDOWS_H) && defined(_WIN32)
   #include <windows.h>
 #endif
-#ifdef HAVE_GL_GL_H
-  #include <GL/gl.h>
-#elif defined(HAVE_OPENGL_GL_H)
-  #include <OpenGL/gl.h>
-#else
-  #error no gl.h
-#endif
+/* #ifdef HAVE_GL_GL_H */
+/*   #include <GL/gl.h> */
+/*   #include <GL/glext.h> */
+/* #elif defined(HAVE_OPENGL_GL_H) */
+/*   #include <OpenGL/gl.h> */
+/*   #include <OpenGL/glext.h> */
+/* #else */
+/*   #error no gl.h */
+/* #endif */
 
 // OS specific headers.
 #ifdef OS_WINDOWS
@@ -63,9 +65,6 @@
 #include <unistd.h>
 #endif
 
-// Guideline Support Library
-#include <gsl/gsl>
-
 // Boost headers.
 #include <boost/utility/string_view.hpp>
 #include <boost/format.hpp>
@@ -74,6 +73,7 @@
 
 // SDL2 headers.
 #include <SDL.h>
+#include <SDL_opengl.h>
 
 // RapidXml
 #include <rapidxml/rapidxml.hpp>

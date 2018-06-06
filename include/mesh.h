@@ -9,7 +9,15 @@
 #include "std.h"
 
 namespace cuttlefish {
-  struct Mesh {
+  /**
+   * A simple mesh.
+   *
+   * The number sequences shouldn't really be dynamic and
+   * probably this mesh struct should be converted to a class
+   * and handle its resources appropriately.
+   */
+  struct Mesh
+  {
     static const std::uint16_t faceVertCount = 3;
     
     /**
