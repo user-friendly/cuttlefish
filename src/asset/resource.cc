@@ -46,8 +46,7 @@ namespace cuttlefish::asset {
 
   void readDaeFile(const String name)
   {
-    Collada dae {getResourcePath() + name};
-    Mesh mesh = dae.getMesh();
+    Mesh mesh {getMesh(getResourcePath() + name)};
 
     std::cout << "cube vertices (" << mesh.vertices.size() << "): ";
     for (auto &val : mesh.vertices) {

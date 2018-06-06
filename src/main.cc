@@ -29,13 +29,8 @@ int main(int argc, char* argv[]) {
   
   //cuttlefish::Game game;
   //game.start();
-  try {
-    cuttlefish::asset::readDaeFile("cube.dae");
-  }
-  catch (cuttlefish::asset::Exception e) {
-    std::cerr << "Collada exceptoin: " << e.message() << std::endl;
-    return EXIT_FAILURE;
-  }
+
+  cuttlefish::asset::readDaeFile("cube.dae");
 
   std::cout << "Bye!" << std::endl;
   return EXIT_SUCCESS;

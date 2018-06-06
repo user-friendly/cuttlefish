@@ -11,35 +11,23 @@
 namespace cuttlefish::asset {
   using namespace rapidxml;
 
-  // @TODO Don't do data validation in the game engine.
-  Collada::Collada(const String &filename)
-    :kFileName {filename}
-  {
-    doc_.parse<0>(buffer_.data());
-    root_ = doc_.first_node("COLLADA");
-    if (root_ == nullptr) {
-      Exception e {"Collada file missing root element: "};
-      e << filename;
-      throw e;
-    }
-    XmlAttr attr = root_->first_attribute("version");
-    if (attr == nullptr) {
-      Exception e {"Could not determine Collada file version: "};
-      e << filename;
-      throw e;
-    }
-    // @TODO Check only major and minor versions.
-    if (kVersion != attr->value()) {
-      Exception e {"Unsupported Collada version "};
-      e << attr->value() << ", file: " << kFileName;
-      e << "\n\t" << "Currently supported version is: " << kVersion;
-      throw e;
-    }
-  }
+  const CharType* kSupportedVersion {"1.4.1"};
 
-  cuttlefish::Mesh Collada::getMesh() const
+  Mesh getMesh(const String &filename)
   {
-    XmlNode geometry_node = root_->first_node("library_geometries")->first_node("geometry");
+    rapidxml::file<> buffer {filename.c_str()};
+    rapidxml::xml_document<> doc {};
+    doc.parse<0>(buffer.data());
+    
+    XmlNode root_node {doc.first_node("COLLADA")};
+
+    if (std::strcmp(kSupportedVersion, root_node->first_attribute("version")->value()) != 0) {
+      std::cerr << "Unsupported Collada version " << root_node->first_attribute("version")->value();
+      std::cerr << ", file: " << filename << "\n\t" << "Currently supported version is: " << kSupportedVersion << std::endl;
+      return Mesh {};
+    }
+    
+    XmlNode geometry_node = root_node->first_node("library_geometries")->first_node("geometry");
     XmlNode mesh_node = geometry_node->first_node("mesh");
     // Probably won't be used?
     String mesh_name {geometry_node->first_attribute("name")->value()};
@@ -101,52 +89,18 @@ namespace cuttlefish::asset {
     mesh.vertices.reserve(vert_count);
     mesh.normals.reserve(norm_count);
 
-    // @TODO Remove debug code.
-    std::cout << mesh.vertices.capacity() << ", " << mesh.normals.capacity() << ", " << mesh.vertIndices.capacity() << ", " << mesh.normIndices.capacity() << std::endl;
-
     // Finally do the actual data parsing.
     parseNumberList(mesh.vertices, vert_node->value());
     parseNumberList(mesh.normals, norm_node->value());
     if (vert_offset == 0) {
       std::move(indices.begin(), std::next(indices.begin(), vert_index_count), std::back_inserter(mesh.vertIndices));
       std::move(std::next(indices.begin(), vert_index_count), std::next(indices.begin(), vert_index_count + norm_index_count), std::back_inserter(mesh.normIndices));
-      return mesh;
     }
     else {
       std::move(indices.begin(), std::next(indices.begin(), norm_index_count), std::back_inserter(mesh.normIndices));
       std::move(std::next(indices.begin(), norm_index_count), std::next(indices.begin(), norm_index_count + vert_index_count), std::back_inserter(mesh.vertIndices));
-      return mesh;
     }
-    // @TODO Will the POD object be moved or copied?
+
     return mesh;
   }
-
-  Exception::Exception() :
-    msg("Undefined error")
-  {};
-
-  Exception::Exception(const char* message) :
-    msg(message)
-  {};
-
-  Exception::Exception(const String& message) :
-    msg(message)
-  {};
-
-  String Exception::message()
-  {
-    return this->msg;
-  };
-
-  Exception& Exception::operator<<(const char* append)
-  {
-    this->msg += append;
-    return *this;
-  };
-  
-  Exception& Exception::operator<<(const String& append)
-  {
-    this->msg += append;
-    return *this;
-  };
 }
