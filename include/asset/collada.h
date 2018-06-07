@@ -19,8 +19,6 @@ namespace cuttlefish::asset::collada {
   using XmlAttr = rapidxml::xml_attribute<CharType> *;
   
   extern const CharType* kSupportedVersion;
-
-  void debugPrintMesh(const Mesh& mesh);
   
   Mesh getMesh(const String &filename);
 

@@ -18,8 +18,20 @@ namespace cuttlefish
       SDL_GLContext glcontext;
 
       Mesh mesh;
+      GLuint vao;
       GLuint vbuffer;
+      GLuint ibuffer;
 
+      std::uint32_t shaderProgram;
+      std::uint32_t simpleVertexShader;
+      std::uint32_t whiteFragmentShader;
+
+      void LoadShaders();
+      void LoadMesh();
+
+      void CheckForErrors(const String when) const;
+      String ErrorToString(GLenum error) const;
+      
     public:
       Renderer();
       ~Renderer();

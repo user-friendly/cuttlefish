@@ -34,6 +34,7 @@ bin_PROGRAMS = fishy
 fishy_SOURCES = src/main.cc \
             src/asset/resource.cc \
             src/asset/collada.cc \
+            src/mesh.cc \
             src/game.cc \
             src/renderer-opengl.cc
 

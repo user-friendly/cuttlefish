@@ -40,6 +40,8 @@ namespace cuttlefish {
     FloatArray normals;
     IndexArray normIndices;
   };
+
+  void debugPrintMesh(const Mesh& mesh);
 }
 
 #endif // MESH_H
