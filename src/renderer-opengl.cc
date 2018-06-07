@@ -94,6 +94,10 @@ namespace cuttlefish
 
     // String imagePath = asset::getResourcePath() + "screen-test.bmp";
 
+    #ifdef DEBUG
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    #endif
+    
     LoadShaders();
     LoadMesh();
   };
@@ -173,12 +177,6 @@ namespace cuttlefish
   {
         // Prepare the mesh to be displayed.
     mesh = asset::collada::getMeshFromResource("cube.dae");
-
-    // for (int i = 0; mesh.vertices.size() > i; i++) {
-    //   if ((i+1) % 3 == 0) {
-    //     mesh.vertices[i] -= 2.0;
-    //   }
-    // }
     
     #ifdef DEBUG
     debugPrintMesh(mesh);
@@ -222,7 +220,7 @@ namespace cuttlefish
 
     glUseProgram(shaderProgram);
     glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, mesh.vertIndices.size());
+    glDrawElements(GL_TRIANGLES, sizeof(mesh.vertIndices[0]) * mesh.vertIndices.size(), GL_UNSIGNED_SHORT, 0);
     
     glBindVertexArray(0);
 
