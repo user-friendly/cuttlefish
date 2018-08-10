@@ -87,6 +87,11 @@
 // TODO Only useful for debug builds.
 #include <rapidxml/rapidxml_print.hpp>
 
+// GLM
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 // Generic local types
 #include "types.h"
 

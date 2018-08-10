@@ -8,6 +8,7 @@
 
 #include "std.h"
 #include "mesh.h"
+#include "asset/shader-opengl.h"
 
 namespace cuttlefish
 {
@@ -23,8 +24,7 @@ namespace cuttlefish
       GLuint ibuffer;
 
       std::uint32_t shaderProgram;
-      std::uint32_t simpleVertexShader;
-      std::uint32_t whiteFragmentShader;
+      std::vector<asset::Shader> shaders;
 
       void LoadShaders();
       void LoadMesh();

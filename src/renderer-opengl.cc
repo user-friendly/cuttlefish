@@ -6,6 +6,7 @@
 #include "renderer-opengl.h"
 #include "asset/resource.h"
 #include "asset/collada.h"
+#include "asset/shader-opengl.h"
 
 namespace cuttlefish
 {
@@ -104,69 +105,31 @@ namespace cuttlefish
 
   void Renderer::LoadShaders()
   {
-    String path {}, source {};
-    int success {};
-    
     // Load simple vertext shader.
-    {
-      path = asset::getResourcePath("shaders") + "simple.vert";
-      std::ifstream file {path};
-      file.seekg(0, std::ios::end);   
-      source.reserve(file.tellg());
-      file.seekg(0, std::ios::beg);
-      source.assign((std::istreambuf_iterator<char>(file)),
-                    std::istreambuf_iterator<char>());
-      
-      simpleVertexShader = glCreateShader(GL_VERTEX_SHADER);
-      const char* cp {source.c_str()};
-      glShaderSource(simpleVertexShader, 1, &cp, NULL);
-      glCompileShader(simpleVertexShader);
-      // Verify the shader compiled successfully.
-      glGetShaderiv(simpleVertexShader, GL_COMPILE_STATUS, &success);
-      if (!success) {
-        std::array<char, 1024> error_msg {};
-        glGetShaderInfoLog(simpleVertexShader, error_msg.size(), NULL, &error_msg[0]);
-        std::cerr << "Failed to compile shader: " << path << std::endl;
-        std::cerr << "\tError: " << &error_msg[0] << std::endl;
-      }
-      CheckForErrors("loading vertex shaders");
-    }
-    
-    // Load white pixel shader.
-    {
-      path = asset::getResourcePath("shaders") + "white.frag";
-      std::ifstream file {path};
-      file.seekg(0, std::ios::end);   
-      source.reserve(file.tellg());
-      file.seekg(0, std::ios::beg);
-      source.assign((std::istreambuf_iterator<char>(file)),
-                    std::istreambuf_iterator<char>());
+    asset::Shader vertSimple {"simple.vert", GL_VERTEX_SHADER};
+    shaders.push_back(vertSimple);
+    CheckForErrors("loading vertex shaders");
 
-      whiteFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-      const char* cp {source.c_str()};
-      glShaderSource(whiteFragmentShader, 1, &cp, NULL);
-      glCompileShader(whiteFragmentShader);
-      // Verify the shader compiled successfully.
-      glGetShaderiv(whiteFragmentShader, GL_COMPILE_STATUS, &success);
-      if (!success) {
-        std::array<char, 1024> error_msg {};
-        glGetShaderInfoLog(whiteFragmentShader, error_msg.size(), NULL, &error_msg[0]);
-        std::cerr << "Failed to compile shader: " << path << std::endl;
-        std::cerr << "\tError: " << &error_msg[0] << std::endl;
-      }
-      CheckForErrors("loading fragment shaders");
-    }
+    // Load white pixel shader.
+    asset::Shader fragSimple {"white.frag", GL_FRAGMENT_SHADER};
+    shaders.push_back(fragSimple);
+    CheckForErrors("loading fragment shaders");
 
     // Setup shader program.
     shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, simpleVertexShader);
-    glAttachShader(shaderProgram, whiteFragmentShader);
+    for (const asset::Shader& shader : shaders) {
+      if (shader.shaderPtr != 0) {
+        glAttachShader(shaderProgram, shader.shaderPtr);
+      }
+    }
     glLinkProgram(shaderProgram);
+
     // Vefiry shader program was linked.
+    int success;
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
       std::array<char, 1024> error_msg {};
-      glGetProgramInfoLog(whiteFragmentShader, error_msg.size(), NULL, &error_msg[0]);
+      glGetProgramInfoLog(shaderProgram, error_msg.size(), NULL, &error_msg[0]);
       std::cerr << "Failed to linking shader program: " << std::endl;
       std::cerr << "\tError: " << &error_msg[0] << std::endl;
     }    
@@ -253,9 +216,6 @@ namespace cuttlefish
 
     glDeleteBuffers(1, &vbuffer);
     glDeleteBuffers(1, &ibuffer);
-
-    glDeleteShader(simpleVertexShader);
-    glDeleteShader(whiteFragmentShader);
     
     SDL_GL_DeleteContext(glcontext);
     SDL_DestroyWindow(window);
