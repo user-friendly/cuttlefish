@@ -106,13 +106,11 @@ namespace cuttlefish
   void Renderer::LoadShaders()
   {
     // Load simple vertext shader.
-    asset::Shader vertSimple {"simple.vert", GL_VERTEX_SHADER};
-    shaders.push_back(std::move(vertSimple));
+    shaders.push_back(asset::Shader {"simple.vert", GL_VERTEX_SHADER});
     CheckForErrors("loading vertex shaders");
 
     // Load white pixel shader.
-    asset::Shader fragSimple {"white.frag", GL_FRAGMENT_SHADER};
-    shaders.push_back(std::move(fragSimple));
+    shaders.push_back(asset::Shader {"white.frag", GL_FRAGMENT_SHADER});
     CheckForErrors("loading fragment shaders");
 
     // Setup shader program.

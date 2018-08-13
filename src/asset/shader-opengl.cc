@@ -63,6 +63,8 @@ namespace cuttlefish::asset {
     shader.id = "";
     shader.shaderType = 0;
     shader.shaderPtr = 0;
+    
+    return *this;
   }
 
   Shader::~Shader()
