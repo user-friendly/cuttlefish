@@ -72,8 +72,10 @@ namespace cuttlefish::asset {
       glDeleteShader(shaderPtr);
       std::cerr << "unloading shader " << id << std::endl;
     }
+    #ifdef DEBUG
     else {
       std::cerr << "destroying empty shader object" << std::endl;
     }
+    #endif
   }
 }

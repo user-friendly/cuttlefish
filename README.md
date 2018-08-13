@@ -75,3 +75,11 @@ $> $PROJECT_SOURCE_DIR/configure --with-sdl-prefix=$CUTTLEFISH_LIBS_DIR \
                                  CPPFLAGS="-I$CUTTLEFISH_LIBS_DIR/include" \
                                  CFLAGS="-I$CUTTLEFISH_LIBS_DIR/include"
 ```
+
+TODOs
+-----
+
+* What are average specifications of PCs used for gaming currently?
+* What are the game needs in terms of performance?
+* Use a logging library instead of standard error.
+
