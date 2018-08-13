@@ -107,12 +107,12 @@ namespace cuttlefish
   {
     // Load simple vertext shader.
     asset::Shader vertSimple {"simple.vert", GL_VERTEX_SHADER};
-    shaders.push_back(vertSimple);
+    shaders.push_back(std::move(vertSimple));
     CheckForErrors("loading vertex shaders");
 
     // Load white pixel shader.
     asset::Shader fragSimple {"white.frag", GL_FRAGMENT_SHADER};
-    shaders.push_back(fragSimple);
+    shaders.push_back(std::move(fragSimple));
     CheckForErrors("loading fragment shaders");
 
     // Setup shader program.
@@ -120,6 +120,7 @@ namespace cuttlefish
     for (const asset::Shader& shader : shaders) {
       if (shader.shaderPtr != 0) {
         glAttachShader(shaderProgram, shader.shaderPtr);
+        CheckForErrors("attaching shader " + shader.id);
       }
     }
     glLinkProgram(shaderProgram);

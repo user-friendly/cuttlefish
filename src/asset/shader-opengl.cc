@@ -15,6 +15,9 @@ namespace cuttlefish::asset {
     int status;
 
     path = asset::getResourcePath("shaders") + id;
+
+    std::cerr << "loading shader: " << id << std::endl;
+    
     std::ifstream file {path};
     file.seekg(0, std::ios::end);   
     source.reserve(file.tellg());
@@ -23,10 +26,7 @@ namespace cuttlefish::asset {
                   std::istreambuf_iterator<char>());
     
     shaderPtr = glCreateShader(shaderType); 
-    if (shaderPtr == 0) {
-      std::cerr << "Failed to create shader object for: " << path << std::endl;
-    }
-    else {
+    if (shaderPtr != 0) {
       const char* cp {source.c_str()};
       glShaderSource(shaderPtr, 1, &cp, NULL);
       glCompileShader(shaderPtr);
@@ -41,11 +41,39 @@ namespace cuttlefish::asset {
         shaderPtr = 0;
       }
     }
+    else {
+      std::cerr << "Failed to create shader object for: " << path << std::endl;
+    }
+  }
+
+  Shader::Shader(Shader&& shader):
+    id {shader.id}, shaderType {shader.shaderType}, shaderPtr {shader.shaderPtr}
+  { 
+    shader.id = "";
+    shader.shaderType = 0;
+    shader.shaderPtr = 0;
+  }
+
+  Shader& Shader::operator=(Shader&& shader)
+  {
+    id = shader.id;
+    shaderType = shader.shaderType;
+    shaderPtr = shader.shaderPtr;
+    
+    shader.id = "";
+    shader.shaderType = 0;
+    shader.shaderPtr = 0;
   }
 
   Shader::~Shader()
   {
-    // A value of 0 should be silently ignored.
-    glDeleteShader(shaderPtr);
+    if (shaderPtr) {
+      // A value of 0 should be silently ignored.
+      glDeleteShader(shaderPtr);
+      std::cerr << "unloading shader " << id << std::endl;
+    }
+    else {
+      std::cerr << "destroying empty shader object" << std::endl;
+    }
   }
 }
