@@ -11,6 +11,7 @@
 
 namespace cuttlefish
 {
+
   /**
    * Parse a character list into a standard vector.
    */
@@ -37,7 +38,7 @@ namespace cuttlefish
   inline void parseNumberList(std::vector<NumT>& array, const String& str) {
     uint8_t len {0};
     for (auto iter = str.begin(); iter <= str.end(); iter++) {
-      if (std::isdigit(*iter) || *iter == '-' || *iter == '.') {
+      if (std::isdigit(*iter) || *iter == '-' || *iter == '.' || *iter == 'e') {
         len++;
       }
       else {

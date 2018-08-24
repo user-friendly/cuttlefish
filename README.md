@@ -82,4 +82,4 @@ TODOs
 * What are average specifications of PCs used for gaming currently?
 * What are the game needs in terms of performance?
 * Use a logging library instead of standard error.
-
+* Remove all the std::exit() calls from the renderer constructor.

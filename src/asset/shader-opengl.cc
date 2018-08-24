@@ -8,10 +8,11 @@
 
 namespace cuttlefish::asset {
   
-  Shader::Shader(const String &filepath, GLenum type):
+  Shader::Shader(const String &filepath, GLenum type, GLuint shaderProgram):
     id {filepath}, shaderType {type}
   {
     String path {}, source {};
+    std::uint32_t shaderPtr;
     int status;
 
     path = asset::getResourcePath("shaders") + id;
@@ -30,16 +31,21 @@ namespace cuttlefish::asset {
       const char* cp {source.c_str()};
       glShaderSource(shaderPtr, 1, &cp, NULL);
       glCompileShader(shaderPtr);
-    
+      
       glGetShaderiv(shaderPtr, GL_COMPILE_STATUS, &status);
       if (status == GL_FALSE) {
         std::array<char, 1024> error_msg {};
         glGetShaderInfoLog(shaderPtr, error_msg.size(), NULL, &error_msg[0]);
         std::cerr << "Failed to compile shader: " << path << std::endl;
         std::cerr << "\tError: " << &error_msg[0] << std::endl;
-        glDeleteShader(shaderPtr);
-        shaderPtr = 0;
       }
+
+      // Attach shader.
+      glAttachShader(shaderProgram, shaderPtr);
+      
+      // Deletes the shaders. Advisable to do after they're linked with
+      // the shader program, since they're no longer needed.
+      glDeleteShader(shaderPtr);
     }
     else {
       std::cerr << "Failed to create shader object for: " << path << std::endl;
@@ -47,37 +53,21 @@ namespace cuttlefish::asset {
   }
 
   Shader::Shader(Shader&& shader):
-    id {shader.id}, shaderType {shader.shaderType}, shaderPtr {shader.shaderPtr}
+    id {shader.id}, shaderType {shader.shaderType}
   { 
     shader.id = "";
     shader.shaderType = 0;
-    shader.shaderPtr = 0;
   }
 
   Shader& Shader::operator=(Shader&& shader)
   {
     id = shader.id;
     shaderType = shader.shaderType;
-    shaderPtr = shader.shaderPtr;
     
     shader.id = "";
     shader.shaderType = 0;
-    shader.shaderPtr = 0;
     
     return *this;
   }
 
-  Shader::~Shader()
-  {
-    if (shaderPtr) {
-      // A value of 0 should be silently ignored.
-      glDeleteShader(shaderPtr);
-      std::cerr << "unloading shader " << id << std::endl;
-    }
-    #ifdef DEBUG
-    else {
-      std::cerr << "destroying empty shader object" << std::endl;
-    }
-    #endif
-  }
 }

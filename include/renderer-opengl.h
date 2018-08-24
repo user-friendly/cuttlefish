@@ -23,8 +23,12 @@ namespace cuttlefish
       GLuint vbuffer;
       GLuint ibuffer;
 
-      std::uint32_t shaderProgram;
+      GLuint shaderProgram;
       std::vector<asset::Shader> shaders;
+
+      glm::mat4 model; // TODO Move to Mesh/Entity?
+      glm::mat4 view;
+      glm::mat4 projection;
 
       void LoadShaders();
       void LoadMesh();

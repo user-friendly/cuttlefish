@@ -39,19 +39,8 @@ namespace cuttlefish::asset::collada {
       // Indices offsets, because COLLADA is that cool.
       vert_offset {}, norm_offset {},
       // Counts that will be retrieved from the float_array elements later on.
-      vert_count {}, norm_count {},
-      // Index counts for vertices and normals.
-      vert_index_count {}, norm_index_count {}
+      vert_count {}, norm_count {}
     ;
-    // Set indices counts.
-    vert_index_count = face_count * Mesh::faceVertCount;
-    norm_index_count = face_count * Mesh::faceVertCount;
-    
-    // Ignore the vcount - we know we're dealing with triangles and that there are two sets - vectors and normals.
-    IndexArray indices {};
-    indices.reserve(vert_index_count + norm_index_count);
-    // Later on, based on the offsets, this vector will be split by moving it.
-    parseNumberList(indices, mesh_node->first_node("polylist")->first_node("p")->value());
 
     // The ids are not known in advance, as opposed to the general structure.
     String vert_id {}, norm_id {};
@@ -92,15 +81,40 @@ namespace cuttlefish::asset::collada {
     // Finally do the actual data parsing.
     parseNumberList(mesh.vertices, vert_node->value());
     parseNumberList(mesh.normals, norm_node->value());
-    if (vert_offset == 0) {
-      std::move(indices.begin(), std::next(indices.begin(), vert_index_count), std::back_inserter(mesh.vertIndices));
-      std::move(std::next(indices.begin(), vert_index_count), std::next(indices.begin(), vert_index_count + norm_index_count), std::back_inserter(mesh.normIndices));
+
+    StringView indices {mesh_node->first_node("polylist")->first_node("p")->value()};
+    uint8_t len {}, icount {};
+    for (auto iter = indices.begin(); iter <= indices.end(); iter++) {
+      if (std::isdigit(*iter) || *iter == '-' || *iter == '.' || *iter == 'e') {
+        len++;
+      }
+      else {
+        if (len > 0) {
+          if (icount % 2 == 0) {
+            // TODO A better type deduction of the index's value type.
+            mesh.vertIndices.push_back(boost::lexical_cast<IndexType>(iter - len, len));
+          }
+          else {
+            // TODO A better type deduction of the index's value type.
+            mesh.normIndices.push_back(boost::lexical_cast<IndexType>(iter - len, len));
+          }
+          icount++;
+        }
+        len = 0;
+      }
     }
-    else {
-      std::move(indices.begin(), std::next(indices.begin(), norm_index_count), std::back_inserter(mesh.normIndices));
-      std::move(std::next(indices.begin(), norm_index_count), std::next(indices.begin(), norm_index_count + vert_index_count), std::back_inserter(mesh.vertIndices));
-    }
+    
+    // The <p> tag stores pairs and the offset is relative to the pair - the below algorithm is wrong.
+    // if (vert_offset == 0) {
+    //   std::move(indices.begin(), std::next(indices.begin(), vert_index_count), std::back_inserter(mesh.vertIndices));
+    //   std::move(std::next(indices.begin(), vert_index_count), std::next(indices.begin(), vert_index_count + norm_index_count), std::back_inserter(mesh.normIndices));
+    // }
+    // else {
+    //   std::move(indices.begin(), std::next(indices.begin(), norm_index_count), std::back_inserter(mesh.normIndices));
+    //   std::move(std::next(indices.begin(), norm_index_count), std::next(indices.begin(), norm_index_count + vert_index_count), std::back_inserter(mesh.vertIndices));
+    // }
 
     return mesh;
   }
+
 }

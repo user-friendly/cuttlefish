@@ -99,28 +99,28 @@ namespace cuttlefish
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     #endif
     
+    model = glm::mat4(1.0f);
+    view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
+    projection = glm::perspective(glm::radians(45.0f), 600.0f / 400.0f, 0.1f, 100.0f);
+    
     LoadShaders();
     LoadMesh();
   };
 
   void Renderer::LoadShaders()
   {
+    // Create shader program.
+    shaderProgram = glCreateProgram();
+    
     // Load simple vertext shader.
-    shaders.push_back(asset::Shader {"simple.vert", GL_VERTEX_SHADER});
+    shaders.push_back(asset::Shader {"simple.vert", GL_VERTEX_SHADER, shaderProgram});
     CheckForErrors("loading vertex shaders");
 
     // Load white pixel shader.
-    shaders.push_back(asset::Shader {"white.frag", GL_FRAGMENT_SHADER});
+    shaders.push_back(asset::Shader {"white.frag", GL_FRAGMENT_SHADER, shaderProgram});
     CheckForErrors("loading fragment shaders");
 
-    // Setup shader program.
-    shaderProgram = glCreateProgram();
-    for (const asset::Shader& shader : shaders) {
-      if (shader.shaderPtr != 0) {
-        glAttachShader(shaderProgram, shader.shaderPtr);
-        CheckForErrors("attaching shader " + shader.id);
-      }
-    }
+
     glLinkProgram(shaderProgram);
 
     // Vefiry shader program was linked.
@@ -131,7 +131,7 @@ namespace cuttlefish
       glGetProgramInfoLog(shaderProgram, error_msg.size(), NULL, &error_msg[0]);
       std::cerr << "Failed to linking shader program: " << std::endl;
       std::cerr << "\tError: " << &error_msg[0] << std::endl;
-    }    
+    }
     CheckForErrors("linking shader program");
   }
   
@@ -148,28 +148,19 @@ namespace cuttlefish
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     
-    // Setup vertex buffer.
+    // Create vertex buffer.
     glGenBuffers(1, &vbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(mesh.vertices[0]) * mesh.vertices.size(), mesh.vertices.data(), GL_STATIC_DRAW);
 
-    CheckForErrors("loading cube mesh into VBO");
-    
-    // Setup index buffer.
+    // Create index buffer.
     glGenBuffers(1, &ibuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mesh.vertIndices[0]) * mesh.vertIndices.size(), mesh.vertIndices.data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(
-			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-			3,                  // size
-			GL_FLOAT,           // type
-			GL_FALSE,           // normalized?
-		    Mesh::faceVertCount * sizeof(mesh.vertices[0]),       // stride
-			(void*)0            // array buffer offset
-    );
+    
+    // Vertex positions
     glEnableVertexAttribArray(0);
-
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(mesh.vertices[0]), (void*) 0);
     glBindVertexArray(0);
 
     CheckForErrors("loading cube mesh into video memory");
@@ -181,9 +172,23 @@ namespace cuttlefish
     glClear(GL_COLOR_BUFFER_BIT);
 
     glUseProgram(shaderProgram);
-    glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, sizeof(mesh.vertIndices[0]) * mesh.vertIndices.size(), GL_UNSIGNED_SHORT, 0);
+
+    model = glm::rotate(model, glm::radians(0.2f), glm::vec3(0.0f, 1.0f, 0.0f));
     
+    GLint uniformLoc = glGetUniformLocation(shaderProgram, "model");
+    glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, glm::value_ptr(model));
+    CheckForErrors("setting model uniform");
+
+    uniformLoc = glGetUniformLocation(shaderProgram, "view");
+    glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, glm::value_ptr(view));
+    CheckForErrors("setting view uniform");
+
+    uniformLoc = glGetUniformLocation(shaderProgram, "projection");
+    glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, glm::value_ptr(projection));
+    CheckForErrors("setting projection uniform");
+    
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, mesh.vertIndices.size(), GL_UNSIGNED_SHORT, 0);
     glBindVertexArray(0);
 
     CheckForErrors("rendering a frame before flushing");

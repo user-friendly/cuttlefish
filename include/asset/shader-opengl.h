@@ -14,15 +14,15 @@ namespace cuttlefish::asset {
   {
     // This is also the resource file path.
     String id;
-    std::uint32_t shaderPtr;
     GLenum shaderType;
     
-    Shader(const String &filepath, GLenum type);
+    Shader(const String &filepath, GLenum type, GLuint shaderProgram);
 
     Shader(Shader&& shader);
     Shader& operator=(Shader&& shader);
+
+    void Use(GLuint shaderProgram);
     
-    ~Shader();
   };
 
 }
