@@ -159,7 +159,7 @@ namespace cuttlefish
 
     // Set vertex attributes
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(mesh.vertices[0]), 0);
     
     glBindVertexArray(0);
 
