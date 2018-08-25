@@ -104,16 +104,6 @@ namespace cuttlefish::asset::collada {
       }
     }
     
-    // The <p> tag stores pairs and the offset is relative to the pair - the below algorithm is wrong.
-    // if (vert_offset == 0) {
-    //   std::move(indices.begin(), std::next(indices.begin(), vert_index_count), std::back_inserter(mesh.vertIndices));
-    //   std::move(std::next(indices.begin(), vert_index_count), std::next(indices.begin(), vert_index_count + norm_index_count), std::back_inserter(mesh.normIndices));
-    // }
-    // else {
-    //   std::move(indices.begin(), std::next(indices.begin(), norm_index_count), std::back_inserter(mesh.normIndices));
-    //   std::move(std::next(indices.begin(), norm_index_count), std::next(indices.begin(), norm_index_count + vert_index_count), std::back_inserter(mesh.vertIndices));
-    // }
-
     return mesh;
   }
 

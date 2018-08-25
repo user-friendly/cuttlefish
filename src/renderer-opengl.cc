@@ -120,7 +120,6 @@ namespace cuttlefish
     shaders.push_back(asset::Shader {"white.frag", GL_FRAGMENT_SHADER, shaderProgram});
     CheckForErrors("loading fragment shaders");
 
-
     glLinkProgram(shaderProgram);
 
     // Vefiry shader program was linked.
@@ -137,7 +136,7 @@ namespace cuttlefish
   
   void Renderer::LoadMesh()
   {
-        // Prepare the mesh to be displayed.
+    // Prepare the mesh to be displayed.
     mesh = asset::collada::getMeshFromResource("cube.dae");
     
     #ifdef DEBUG
@@ -147,7 +146,7 @@ namespace cuttlefish
     // Generate a vertex array.
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    
+
     // Create vertex buffer.
     glGenBuffers(1, &vbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vbuffer);
@@ -157,10 +156,11 @@ namespace cuttlefish
     glGenBuffers(1, &ibuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mesh.vertIndices[0]) * mesh.vertIndices.size(), mesh.vertIndices.data(), GL_STATIC_DRAW);
-    
-    // Vertex positions
+
+    // Set vertex attributes
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(mesh.vertices[0]), (void*) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    
     glBindVertexArray(0);
 
     CheckForErrors("loading cube mesh into video memory");
