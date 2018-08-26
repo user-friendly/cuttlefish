@@ -36,10 +36,17 @@ Not allowed, unless necessary:
 * Multiple inheritance
 * Operator overloading (unless very simple)
 * RTTI
-* STL (really?)
+* STL (is it really needed?)
 * Stock allocators. Use custom bulk allocators.
 
 These restrictions do not apply to tools, unless there are severe performance issues.
+
+Graphic APIs
+------------
+
+At the moment, the only API used is OpenGL. Related code should reside under the 'cuttlefish::opengl' namespace. Additional implementations (such as Vulkan or DirectX) should go in a respective namespace.
+
+Any usage of API specific symbols outside the appropriate namespace is forbidden, except the interface. Drivers will deal with graphics related game objects and optimizations for that driver. I'll try to avoid complicated OOP solutions here since OpenGL might be the only API used ever.
 
 Custom Boost
 ------------
