@@ -3,10 +3,9 @@
  * Renderer definition file.
  */
 
-#include "renderer-opengl.h"
+#include "renderer.h"
 #include "asset/resource.h"
 #include "asset/collada.h"
-#include "asset/shader-opengl.h"
 
 namespace cuttlefish
 {

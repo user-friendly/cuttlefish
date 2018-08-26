@@ -34,10 +34,10 @@ bin_PROGRAMS = fishy
 fishy_SOURCES = src/main.cc \
             src/asset/resource.cc \
             src/asset/collada.cc \
-            src/asset/shader-opengl.cc \
+            src/asset/shader.cc \
             src/mesh.cc \
             src/game.cc \
-            src/renderer-opengl.cc
+            src/renderer.cc
 
 fishy_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
 fishy_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)

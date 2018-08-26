@@ -8,7 +8,7 @@
 
 #include "std.h"
 #include "mesh.h"
-#include "asset/shader-opengl.h"
+#include "asset/shader.h"
 
 namespace cuttlefish
 {

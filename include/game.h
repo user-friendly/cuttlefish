@@ -7,7 +7,7 @@
 #define GAME_H
 
 #include "std.h"
-#include "renderer-opengl.h"
+#include "renderer.h"
 
 namespace cuttlefish {
 	class Game {

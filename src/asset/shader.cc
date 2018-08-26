@@ -3,7 +3,7 @@
  * OpenGL Shader definition.
  */
 
-#include "asset/shader-opengl.h"
+#include "asset/shader.h"
 #include "asset/resource.h"
 
 namespace cuttlefish::asset {
