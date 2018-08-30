@@ -37,7 +37,10 @@ fishy_SOURCES = src/main.cc \
             src/asset/shader.cc \
             src/mesh.cc \
             src/game.cc \
-            src/renderer.cc
+            src/scene.cc \
+            src/window.cc \
+            src/opengl/driver.cc
+# TODO If the time comes, figure out how to detect graphics API drivers.
 
 fishy_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)
 fishy_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_PCH)

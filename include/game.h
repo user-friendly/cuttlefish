@@ -7,23 +7,20 @@
 #define GAME_H
 
 #include "std.h"
-#include "renderer.h"
 
 namespace cuttlefish {
 	class Game {
     protected:
+      
       /**
        * Controls the main game loop.
        */
       bool run = true;
-      /**
-       * Controls rendering.
-       */
-      bool render = true;
       
-      Renderer graphics;
 	public:
       ~Game();
+
+      void tick();
       
       /**
        * Starts the main game loop.
@@ -32,6 +29,9 @@ namespace cuttlefish {
        * fired from (physics, logic, rendering, sound, etc).
        */
       void start();
+
+      bool isRunning();
+      
       /**
        * Stops the main game loop.
        */

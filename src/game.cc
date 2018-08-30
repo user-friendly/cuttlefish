@@ -8,20 +8,23 @@
 
 namespace cuttlefish {
   // @FIXME Handle inputs in a separate class.
-  void handleInputs(Game& game, Renderer& graphics);
+  void handleInputs(Game& game);
+
+  void Game::tick()
+  {
+    // @FIXME Use STD/Boost equivalent.
+    SDL_Delay(40);
+    handleInputs(*this);
+  }
   
   void Game::start()
   {
-    int delay = 1000 / 25;
-    while (this->run) {
-      // @FIXME Use STD/Boost equivalent.
-      SDL_Delay(delay);
+    this->run = true;
+  }
 
-      handleInputs(*this, this->graphics);
-
-      this->graphics.DrawExample();
-      this->graphics.Render();
-    }
+  bool Game::isRunning()
+  {
+    return this->run;
   }
 
   void Game::stop()
@@ -31,10 +34,10 @@ namespace cuttlefish {
 
   Game::~Game()
   {
-    std::cout << "Game: free resources and shutdown." << std::endl;
+    std::cout << "Shutting down the game." << std::endl;
   }
 
-  void handleInputs(Game& game, Renderer& graphics)
+  void handleInputs(Game& game)
   {
     SDL_Event event;
     if (SDL_PollEvent(&event)) {
@@ -53,19 +56,9 @@ namespace cuttlefish {
           std::cout << "Event loop: quit key pressed" << std::endl;
           game.stop();
           break;
-        case SDLK_f:
-          graphics.WindowFullscreen();
-          break;
-        case SDLK_m:
-          graphics.WindowMinimize();
-          break;
         case SDLK_e:
           std::cerr << "SDL_GetDesktopDisplayMode Error: nope, it's a fake exception." << std::endl;
           break;
-        // case SDLK_r:
-        //   render = !render;
-        //   std::cout << "Render turned " << (render ? "on" : "off") << std::endl;
-        //   break;
         }
       }
       else if (event.type == SDL_QUIT) {
