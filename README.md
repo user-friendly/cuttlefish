@@ -51,12 +51,12 @@ Any usage of API specific symbols outside the appropriate namespace is forbidden
 Custom Boost
 ------------
 
-Clone the Github repository and make sure all submodules are initialized ([see this link](https://github.com/boostorg/boost/wiki/Getting-Started)). The compilation and installation guide for 1.63.0 can be found [here](http://www.boost.org/doc/libs/1_63_0/more/getting_started/unix-variants.html#prepare-to-use-a-boost-library-binary). Before initializing the submodules, make sure the version you require is checked out (currently, the minimum boost version required is 1.63.0).
+Clone the Github repository and make sure all submodules are initialized ([see this link](https://github.com/boostorg/boost/wiki/Getting-Started)). The compilation and installation guide for 1.68.0 can be found [here](http://www.boost.org/doc/libs/1_63_0/more/getting_started/unix-variants.html#prepare-to-use-a-boost-library-binary). Before initializing the submodules, make sure the version you require is checked out (currently, the minimum boost version required is 1.68.0). Another easier way is to simply grab a tar ball from [Boost.org](https://www.boost.org/users/download/).
 
-There are two shell scripts provided that can help with compiling and installation: `boost-bootstrap.sh` and `boost-build.sh`. The first one prepares for compilation and the second one builds and installs the necessary libraries. Note that both scripts will need to be executed within Boost's source root directory and the `boost-bootstrap.sh` requires one argument - the absolute path to Cuttlefish's source directory.
+There are two shell scripts provided that can help with compiling and installation: `boost-bootstrap.sh` and `boost-build.sh`. The first one prepares for compilation and the second one builds and installs the necessary libraries. Note that both scripts will need to be executed within Boost's source root directory and the `boost-bootstrap.sh` requires one argument - the absolute path to Cuttlefish's source directory. The compiler (toolset) currently set is clang. Simply modify the bootstrap script to change it.
 
 ```shell
-$> cd /home/dev/boost_1_63_0
+$> cd /home/dev/boost_1_68_0
 $> /home/dev/cuttlefish/boost-bootstrap.sh /home/dev/cuttlefish
 $> /home/dev/cuttlefish/boost-build.sh
 ```
@@ -89,4 +89,5 @@ TODOs
 * What are average specifications of PCs used for gaming currently?
 * What are the game needs in terms of performance?
 * Use a logging library instead of standard error.
-* Remove all the std::exit() calls from the renderer constructor.
+* ~~Remove all the std::exit() calls from the renderer constructor.~~ Class no longer exists, but it's probably a good idea to not abruptly terminate the program from within constructors.
+* Namespace header file guards?

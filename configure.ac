@@ -42,7 +42,7 @@ dnl ])
 # Checks for libraries.
 AX_CHECK_GL()
 
-AX_BOOST_BASE([1.63],
+AX_BOOST_BASE([1.68],
         [],
         [AC_MSG_ERROR([Minimal Boost library requirments not met.])
 ])
@@ -53,6 +53,9 @@ AX_BOOST_CHRONO
 AX_BOOST_LOG
 AX_BOOST_THREAD
 AX_BOOST_REGEX
+dnl At this point, use the shared Boost libraries.
+dnl TODO Use static linking later on.
+AC_DEFINE([BOOST_ALL_DYN_LINK], [1], ["Boost dynamic library link flag"])
 
 dnl Package checks.
 

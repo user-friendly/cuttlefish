@@ -31,7 +31,7 @@ AM_BOOST_LIBS = $(BOOST_SYSTEM_LIB) \
 pch_files = *.h.?ch *.h.?ch
 
 bin_PROGRAMS = fishy
-fishy_SOURCES = src/main.cc \
+fishy_SOURCES = src/log.cc \
             src/asset/resource.cc \
             src/asset/collada.cc \
             src/asset/shader.cc \
@@ -39,7 +39,8 @@ fishy_SOURCES = src/main.cc \
             src/game.cc \
             src/scene.cc \
             src/window.cc \
-            src/opengl/driver.cc
+            src/opengl/driver.cc \
+            src/main.cc
 # TODO If the time comes, figure out how to detect graphics API drivers.
 
 fishy_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PCH)

@@ -24,6 +24,9 @@ void printLegal();
 
 using namespace cuttlefish;
 
+const Log Logger {};
+
+
 #ifdef OS_WINDOWS
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
 #else
@@ -31,25 +34,22 @@ int main(int argc, char* argv[]) {
 #endif
   printLegal();
 
+  BOOST_LOG(BLogger::get()) << "BOOST LOGGER";
+  
   // Begin SDL initialization.
   {
-    std::cout << "SDL running on platform: " << SDL_GetPlatform() << std::endl;
+    Logger.DebugApplication("Running on platform: %s", SDL_GetPlatform());
 
     SDL_version compiled;
     SDL_version linked;
       
     SDL_VERSION(&compiled);
     SDL_GetVersion(&linked);
-      
-    std::cout << (boost::format("Compiled against SDL version %1%.%2%.%3%.")
-                  // All structure members are of Uint8 type.
-                  % static_cast<std::uint16_t>(compiled.major)
-                  % static_cast<std::uint16_t>(compiled.minor)
-                  % static_cast<std::uint16_t>(compiled.patch)) << std::endl;
-    std::cout << (boost::format("Linking against SDL version %1%.%2%.%3%.")
-                  % static_cast<std::uint16_t>(linked.major)
-                  % static_cast<std::uint16_t>(linked.minor)
-                  % static_cast<std::uint16_t>(linked.patch)) << std::endl;
+
+    Logger.DebugApplication("Compiled against SDL version %d.%d.%d.",
+                            compiled.major, compiled.minor, compiled.patch);
+    Logger.DebugApplication("Linking against SDL version %d.%d.%d.",
+                            linked.major, linked.minor, linked.patch);
   }
 
   uint32_t init_flags = SDL_INIT_VIDEO
@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
     }
   }
   
-  std::cout << "Shutting down SDL." << std::endl;
+  Logger.DebugApplication("Shutting down SDL. Logger will stop working past this point.");
   SDL_Quit();
 
   return EXIT_SUCCESS;

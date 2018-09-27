@@ -75,6 +75,11 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
+#include <boost/log/sources/logger.hpp>
+#include <boost/log/sources/record_ostream.hpp>
+#include <boost/log/sources/global_logger_storage.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
 
 // SDL2 headers.
 #include <SDL.h>
@@ -92,7 +97,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// Generic local types
+// Local systems that are widely used
+// Generic types
 #include "types.h"
+// The logger
+#include "log.h"
 
 #endif // STD_H_

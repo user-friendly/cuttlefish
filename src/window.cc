@@ -36,6 +36,7 @@ namespace cuttlefish
   Window::~Window()
   {
     std::cout << "Closing window." << std::endl;
+    Logger.DebugApplication("Closing window.");
     SDL_DestroyWindow(window);
   };
   
