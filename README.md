@@ -57,7 +57,7 @@ There are two shell scripts provided that can help with compiling and installati
 
 ```shell
 $> cd /home/dev/boost_1_68_0
-$> /home/dev/cuttlefish/boost-bootstrap.sh /home/dev/cuttlefish
+$> /home/dev/cuttlefish/boost-bootstrap.sh /home/dev/cuttlefish/lib
 $> /home/dev/cuttlefish/boost-build.sh
 ```
 The above example should install all necessary Boost files to `/home/dev/cuttlefish/libs/include` and `/home/dev/cuttlefish/libs/lib`. Make sure those folders are created prior to using the build script.
@@ -67,21 +67,21 @@ The above example should install all necessary Boost files to `/home/dev/cuttlef
 Compilation
 -----------
 
-Custom libraries are in the `./libs` directory. Include the directory
-for both the complier and linker.
+Custom libraries are in the `/home/dev/cuttlefish/lib` directory. Include the directory for both the complier and linker.
 
-Configuration example, presuming `$PROJECT_SOURCE_DIR` is set as the
-project's absolute home directory:
+Configuration example, presuming `/home/dev/cuttlefis` is the project's absolute directory and the build directory is `/home/dev/cuttlefish/bin`:
 
 ```shell
-$> export CUTTLEFISH_LIBS_DIR="$PROJECT_SOURCE_DIR/libs"
-$> cd $PROJECT_BUILD_DIR
-$> $PROJECT_SOURCE_DIR/configure --with-sdl-prefix=$CUTTLEFISH_LIBS_DIR \
+$> export CUTTLEFISH_LIBS_DIR="/home/dev/cuttlefish/libs"
+$> cd /home/dev/cuttlefish/bin
+$> /home/dev/cuttlefish/configure --with-sdl-prefix=$CUTTLEFISH_LIBS_DIR \
                                  --with-boost=$CUTTLEFISH_LIBS_DIR \
                                  CXXFLAGS="-I$CUTTLEFISH_LIBS_DIR/include" \
                                  CPPFLAGS="-I$CUTTLEFISH_LIBS_DIR/include" \
                                  CFLAGS="-I$CUTTLEFISH_LIBS_DIR/include"
 ```
+
+Note that the build directory can be outside the project's directory.
 
 TODOs
 -----

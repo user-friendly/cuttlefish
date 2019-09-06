@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-INSTALL_DIR="$1/libs"
+INSTALL_DIR="$1"
 echo "install dir is $INSTALL_DIR"
 
 if [ ! -d "$INSTALL_DIR" ]; then
