@@ -48,24 +48,8 @@ At the moment, the only API used is OpenGL. Related code should reside under the
 
 Any usage of API specific symbols outside the appropriate namespace is forbidden, except the interface. Drivers will deal with graphics related game objects and optimizations for that driver. I'll try to avoid complicated OOP solutions here since OpenGL might be the only API used ever.
 
-Custom Boost
-------------
-
-Clone the Github repository and make sure all submodules are initialized ([see this link](https://github.com/boostorg/boost/wiki/Getting-Started)). The compilation and installation guide for 1.68.0 can be found [here](http://www.boost.org/doc/libs/1_63_0/more/getting_started/unix-variants.html#prepare-to-use-a-boost-library-binary). Before initializing the submodules, make sure the version you require is checked out (currently, the minimum boost version required is 1.68.0). Another easier way is to simply grab a tar ball from [Boost.org](https://www.boost.org/users/download/).
-
-There are two shell scripts provided that can help with compiling and installation: `boost-bootstrap.sh` and `boost-build.sh`. The first one prepares for compilation and the second one builds and installs the necessary libraries. Note that both scripts will need to be executed within Boost's source root directory and the `boost-bootstrap.sh` requires one argument - the absolute path to Cuttlefish's source directory. The compiler (toolset) currently set is clang. Simply modify the bootstrap script to change it.
-
-```shell
-$> cd /home/dev/boost_1_68_0
-$> /home/dev/cuttlefish/boost-bootstrap.sh /home/dev/cuttlefish/lib
-$> /home/dev/cuttlefish/boost-build.sh
-```
-The above example should install all necessary Boost files to `/home/dev/cuttlefish/libs/include` and `/home/dev/cuttlefish/libs/lib`. Make sure those folders are created prior to using the build script.
-
-**Never run any of the scripts as root!**
-
-Compilation
------------
+Building
+--------
 
 Custom libraries are in the `/home/dev/cuttlefish/lib` directory. Include the directory for both the complier and linker.
 
@@ -83,9 +67,30 @@ $> /home/dev/cuttlefish/configure --with-sdl-prefix=$CUTTLEFISH_LIBS_DIR \
 
 Note that the build directory can be outside the project's directory.
 
+Run `autoreconf -vfi` first and then the `configure.sh` script. Without any arguments it will use the current directory as source and `./bin` as the build directory.
+
+Change to the build directory and execute `make` there.
+
+Custom Boost
+------------
+
+Clone the Github repository and make sure all submodules are initialized ([see this link](https://github.com/boostorg/boost/wiki/Getting-Started)). The compilation and installation guide for 1.68.0 can be found [here](http://www.boost.org/doc/libs/1_63_0/more/getting_started/unix-variants.html#prepare-to-use-a-boost-library-binary). Before initializing the submodules, make sure the version you require is checked out (currently, the minimum boost version required is 1.68.0). Another easier way is to simply grab a tar ball from [Boost.org](https://www.boost.org/users/download/).
+
+There are two shell scripts provided that can help with compiling and installation: `boost-bootstrap.sh` and `boost-build.sh`. The first one prepares for compilation and the second one builds and installs the necessary libraries. Note that both scripts will need to be executed within Boost's source root directory and the `boost-bootstrap.sh` requires one argument - the absolute path to Cuttlefish's source directory. The compiler (toolset) currently set is clang. Simply modify the bootstrap script to change it.
+
+```shell
+$> cd /home/dev/boost_1_68_0
+$> /home/dev/cuttlefish/boost-bootstrap.sh /home/dev/cuttlefish/lib
+$> /home/dev/cuttlefish/boost-build.sh
+```
+The above example should install all necessary Boost files to `/home/dev/cuttlefish/libs/include` and `/home/dev/cuttlefish/libs/lib`. Make sure those folders are created prior to using the build script.
+
+**Never run any of the scripts as root!**
+
 TODOs
 -----
 
+* Update this document.
 * What are average specifications of PCs used for gaming currently?
 * What are the game needs in terms of performance?
 * Use a logging library instead of standard error.

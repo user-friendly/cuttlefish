@@ -42,11 +42,12 @@ dnl ])
 # Checks for libraries.
 AX_CHECK_GL()
 
-AX_BOOST_BASE([1.68],
+AX_BOOST_BASE([1.73],
         [],
         [AC_MSG_ERROR([Minimal Boost library requirments not met.])
 ])
-AX_BOOST_SYSTEM
+# Header only as of 1.69
+# AX_BOOST_SYSTEM
 AX_BOOST_FILESYSTEM
 AX_BOOST_DATE_TIME
 AX_BOOST_CHRONO

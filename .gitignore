@@ -112,6 +112,11 @@ build-aux
 ipch
 x64
 
+# Codelite
+*.project
+*.workspace
+.codelite
+
 # Eclipse
 *.pydevproject
 .metadata
